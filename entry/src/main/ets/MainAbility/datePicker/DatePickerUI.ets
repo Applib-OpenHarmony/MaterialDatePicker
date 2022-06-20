@@ -1,43 +1,65 @@
 import DatePickerCalendar from './DatePickerCalendar'
 import yearSelect from './yearSelect'
 
-@Component
+@CustomDialog
 struct DatePickerUI{
-  private calendarModel: DatePickerUI.Model = new DatePickerUI.Model();
+  controller: CustomDialogController
+  cancel: () => void
+  confirm: (string) => void
+
   private model:DatePickerCalendar.Model = new DatePickerCalendar.Model();
   private yearModel: yearSelect.Model = new yearSelect.Model();
 
   @State currYear:number = new Date().getFullYear();
   @State currMonth:number = new Date().getMonth();
-  @State showSelected: string = new Date().toDateString()+''
   @State showYearList: boolean = false;
+  @State selectedDay: number = new Date().getDate();
+  @State selectedMonth: number = new Date().getMonth();
+  @State selectedYear: number = new Date().getFullYear();
 
+  @State componentTitle: string = 'Select date'
+  weekdays:string[] = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']
+  months:string[] = ['January','February','March','April','May','June','July','August','September','October','November','December']
+
+  @State showSelected: string =""
 
   build(){
     Column(){
-      //Date select dialog title
-      Row(){
-        Text(this.calendarModel.componentTitle).fontColor(Color.White).fontSize(15).fontFamily('Times').margin({left:15})
+//        Date select dialog title and quit button
+      Flex({justifyContent:FlexAlign.SpaceBetween}){
+        // Dialog Title
+        Text(this.componentTitle).fontColor(Color.White).fontSize(15).fontFamily('Times').margin({left:10,top:10})
+
+        //Quit Button
+        Button({type:ButtonType.Circle}){
+          Image($r("app.media.icon")).width(20).height(20)
+        }.width(20).height(20).margin({right:20,top:10})
+        .onClick((event:ClickEvent)=>{
+          this.controller.close()
+          this.cancel()
+        })
       }
-      .justifyContent(FlexAlign.Start)
       .backgroundColor(Color.Blue)
       .width('100%')
       .height(60)
 
-      // Selected date
+      // Selected date in (Day, Month Date) format
       Row(){
-        Text(this.showSelected).fontColor(Color.White).fontSize(25).fontFamily('Times').fontWeight(FontWeight.Bold).margin({left:15})
+        Text(this.weekdays[new Date(this.selectedYear,this.selectedMonth,this.selectedDay).getDay()]+", "+ this.months[this.selectedMonth]+" "+String(this.selectedDay).padStart(2,'0')).fontColor(Color.White).fontSize(30).fontFamily('Times').fontWeight(FontWeight.Bold).margin({left:15})
       }
       .justifyContent(FlexAlign.Start)
       .backgroundColor(Color.Blue)
       .width('100%')
       .height(40)
 
-
+      // Month and year navigation panel
       Flex({justifyContent:FlexAlign.SpaceBetween}){
         Column(){
           Row(){
-            Text(this.calendarModel.months[this.currMonth] + " " + this.currYear).fontSize(15).fontFamily('Times New Roman')
+            // Current month and year
+            Text(this.months[this.currMonth] + " " + this.currYear).fontSize(15).fontFamily('Times New Roman')
+
+            // Button to open year-select grid
             Button({type:ButtonType.Circle}){
               Image('app.media.icon').width(10).height(10)
             }.width(15).height(15).margin({left:5})
@@ -49,26 +71,24 @@ struct DatePickerUI{
         }
         Column(){
           Row(){
-            // month-back button
+            // Navigate to previous month button
             Button({type:ButtonType.Circle}){
               Image($r("app.media.icon")).width(20).height(20)
             }.width(20).height(20).margin({right:10})
             .onClick((event:ClickEvent) =>{
               this.currMonth-=1;
-              console.log(this.model.selectedDate.toDateString())
               if(this.currMonth==-1) {
                 this.currMonth=11
                 this.currYear-=1
               }
             })
 
-            // month-forward button
+            // Navigate to next month button
             Button({type:ButtonType.Circle}){
               Image($r("app.media.icon")).width(20).height(20)
             }.width(20).height(20)
             .onClick((event:ClickEvent) =>{
               this.currMonth+=1;
-              console.log(this.model.selectedDate.toDateString())
               if(this.currMonth==12) {
                 this.currMonth=0
                 this.currYear+=1
@@ -83,27 +103,29 @@ struct DatePickerUI{
 
 
       // Year Grid
-      if(this.showYearList) yearSelect({yearModel:this.yearModel,selectedYear:$currYear});
+      if(this.showYearList) yearSelect({yearModel:this.yearModel,selectedYear:$currYear,yearStartRange:1998,yearEndRange:2050});
 
       // Month Calendar
-      if(!this.showYearList) DatePickerCalendar({model:this.model,currMonth:this.currMonth+0,currYear:this.currYear+0,selectedDateString: $showSelected})
+      if(!this.showYearList) DatePickerCalendar({model:this.model,currMonth:this.currMonth+0,currYear:this.currYear+0,selectedYear:$selectedYear,selectedMonth:$selectedMonth,selectedDay:$selectedDay,selectedDateString:$showSelected})
 
       //Cancel and confirm buttons
+      Row(){
+        // Cancel button
+        Button("Cancel",{type:ButtonType.Normal}).width(100).backgroundColor(Color.White).fontColor(Color.Black).onClick((event:ClickEvent)=>{
+          this.controller.close()
+          this.cancel()
+        }).padding(10)
 
-    }
+        // Confirm button
+        Button("Select",{type:ButtonType.Normal}).width(100).borderRadius(2).fontWeight(20).fontSize(18).onClick((event:ClickEvent)=>{
+          this.confirm(this.showSelected)
+          this.controller.close()
+        }).padding(10)
+      }.justifyContent(FlexAlign.End).width('100%').height(40).margin({right:20,bottom:30})
+
+    }.height(550)
   }
 }
 
-namespace DatePickerUI{
-  export class Model {
-    componentTitle: string = 'Select date'
-    months:string[] = ['January','February','March','April','May','June','July','August','September','October','November','December']
-
-    setComponentTitle(title: string): Model{
-      this.componentTitle = title;
-      return this;
-    }
-  }
-}
 
 export default DatePickerUI;
