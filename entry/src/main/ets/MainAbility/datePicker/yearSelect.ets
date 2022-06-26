@@ -2,8 +2,8 @@
 struct yearSelect{
   private yearModel: yearSelect.Model = new yearSelect.Model();
   scroll_grid:Scroller = new Scroller()
-  @State yearStartRange:number = 1970
-  @State yearEndRange:number = 2030
+  @Link yearStartRange:number
+  @Link yearEndRange:number
   @Link selectedYear:number
 
 
