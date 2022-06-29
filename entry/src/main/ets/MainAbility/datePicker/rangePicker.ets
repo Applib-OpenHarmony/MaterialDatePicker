@@ -1,6 +1,14 @@
 import rangePickerCalendar from './rangePickerCalendar'
 import yearSelect from './yearSelect'
 
+enum DayState {
+  NOT_SELECTABLE,
+  NORMAL_DAY,
+  TODAY_DAY,
+  SELECTED_DAY,
+  IN_RANGE_DAY
+}
+
 @CustomDialog
 struct rangePicker{
 
@@ -28,7 +36,7 @@ struct rangePicker{
 
 
   weekdays:string[] = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']
-  months:string[] = ['January','February','March','April','May','June','July','August','September','October','November','December']
+  months:string[] = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
 
   private model:rangePickerCalendar.Model = new rangePickerCalendar.Model();
   private yearModel: yearSelect.Model = new yearSelect.Model();
@@ -36,6 +44,37 @@ struct rangePicker{
   controller: CustomDialogController
   cancel: () => void
   confirm: (string) => void
+
+  @State typeOfDayArray: DayState[] = this.makeArray()
+
+  isInBetween(currDate: Date):boolean{
+    var startDate: Date = new Date(this.startYear,this.startMonth,this.startDay)
+    var endDate: Date = new Date(this.endYear,this.endMonth,this.endDay)
+    if(startDate<currDate && currDate<endDate) return true;
+    else return false;
+  }
+
+  makeArray(): DayState[]{
+    var arr: DayState[] = new Array(this.model.getDaysInMonth(this.currYear,this.currMonth))
+    for(var i=0;i<arr.length;i++){
+      if(this.currYear==new Date().getFullYear() && this.currMonth==new Date().getMonth() && i+1==new Date().getDate()){
+        arr[i]=DayState.TODAY_DAY;
+      }
+      else if(this.isStartSelected && this.startYear==this.currYear && this.startMonth==this.currMonth && i+1==this.startDay){
+        arr[i]=DayState.SELECTED_DAY;
+      }
+      else if(this.isEndSelected && this.endYear==this.currYear && this.endMonth==this.currMonth && i+1==this.endDay){
+        arr[i]=DayState.SELECTED_DAY;
+      }
+      else if(this.isStartSelected && this.isEndSelected && this.isInBetween(new Date(this.currYear,this.currMonth,i+1))){
+        arr[i]=DayState.IN_RANGE_DAY;
+      }
+      else{
+        arr[i]=DayState.NORMAL_DAY;
+      }
+    }
+    return arr;
+  }
 
   build(){
     Column(){
@@ -107,7 +146,10 @@ struct rangePicker{
               Image('app.media.icon').width(10).height(10)
             }.width(15).height(15).margin({left:5})
             .onClick((event:ClickEvent)=>{
-              if(this.showYearList) this.showYearList=false;
+              if(this.showYearList) {
+                this.showYearList=false;
+                this.typeOfDayArray=this.makeArray();
+              }
               else this.showYearList=true;
             })
           }
@@ -124,6 +166,7 @@ struct rangePicker{
                 this.currMonth=11
                 this.currYear-=1
               }
+              this.typeOfDayArray=this.makeArray();
             })
 
             // Navigate to next month button
@@ -136,6 +179,7 @@ struct rangePicker{
                 this.currMonth=0
                 this.currYear+=1
               }
+              this.typeOfDayArray=this.makeArray();
             })
           }
           .justifyContent(FlexAlign.End)
@@ -149,7 +193,7 @@ struct rangePicker{
         if(this.showYearList) yearSelect({yearModel:this.yearModel,selectedYear:$currYear,yearStartRange:$yearStartRange,yearEndRange:$yearEndRange});
 
         // Month Calendar
-        if(!this.showYearList) rangePickerCalendar({model:this.model,currMonth:this.currMonth+0,currYear:this.currYear+0,startDay:$startDay,startMonth:$startMonth,startYear:$startYear,endDay:$endDay,endMonth:$endMonth,endYear:$endYear,isStartSelected:$isStartSelected,isEndSelected:$isEndSelected});
+        if(!this.showYearList) rangePickerCalendar({model:this.model,currMonth:$currMonth,currYear:$currYear,startDay:$startDay,startMonth:$startMonth,startYear:$startYear,endDay:$endDay,endMonth:$endMonth,endYear:$endYear,isStartSelected:$isStartSelected,isEndSelected:$isEndSelected,typeOfDayArray:$typeOfDayArray});
 
       }.width('100%').height(300).margin({bottom:20})
 
