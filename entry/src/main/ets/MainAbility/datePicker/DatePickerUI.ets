@@ -1,7 +1,13 @@
 import DatePickerCalendar from './DatePickerCalendar'
 import yearSelect from './yearSelect'
-import textDialog from './textDialog'
 
+enum DayState {
+  NOT_SELECTABLE,
+  NORMAL_DAY,
+  TODAY_DAY,
+  SELECTED_DAY,
+  IN_RANGE_DAY
+}
 @CustomDialog
 struct DatePickerUI{
 
@@ -29,6 +35,24 @@ struct DatePickerUI{
   private model:DatePickerCalendar.Model = new DatePickerCalendar.Model();
   private yearModel: yearSelect.Model = new yearSelect.Model();
 
+  @State isSelected:boolean =false
+  @State typeOfDayArray: DayState[]=this.makeArray();
+
+  makeArray(): DayState[]{
+    var arr: DayState[] = new Array(this.model.getDaysInMonth(this.currYear,this.currMonth))
+    for(var i=0;i<arr.length;i++){
+      if(this.currYear==new Date().getFullYear() && this.currMonth==new Date().getMonth() && i+1==new Date().getDate()){
+        arr[i]=DayState.TODAY_DAY;
+      }
+      else if(this.isSelected && this.selectedYear==this.currYear && this.selectedMonth==this.currMonth && i+1==this.selectedDay){
+        arr[i]=DayState.SELECTED_DAY;
+      }
+      else{
+        arr[i]=DayState.NORMAL_DAY;
+      }
+    }
+    return arr;
+  }
 
   build(){
     Column(){
@@ -81,7 +105,10 @@ struct DatePickerUI{
               Image('app.media.icon').width(10).height(10)
             }.width(15).height(15).margin({left:5})
             .onClick((event:ClickEvent)=>{
-                if(this.showYearList) this.showYearList=false;
+                if(this.showYearList){
+                  this.showYearList=false;
+                  this.typeOfDayArray=this.makeArray();
+                }
                 else this.showYearList=true;
             })
           }
@@ -98,6 +125,7 @@ struct DatePickerUI{
                 this.currMonth=11
                 this.currYear-=1
               }
+              this.typeOfDayArray=this.makeArray();
             })
 
             // Navigate to next month button
@@ -110,6 +138,7 @@ struct DatePickerUI{
                 this.currMonth=0
                 this.currYear+=1
               }
+              this.typeOfDayArray=this.makeArray();
             })
           }
           .justifyContent(FlexAlign.End)
@@ -123,7 +152,7 @@ struct DatePickerUI{
         if(this.showYearList) yearSelect({yearModel:this.yearModel,selectedYear:$currYear,yearStartRange:$yearStartRange,yearEndRange:$yearEndRange});
 
         // Month Calendar
-        if(!this.showYearList) DatePickerCalendar({model:this.model,currMonth:this.currMonth+0,currYear:this.currYear+0,selectedYear:$selectedYear,selectedMonth:$selectedMonth,selectedDay:$selectedDay,selectedDateString:$showSelected,selectFrom:$selectFrom,selectBefore:$selectBefore})
+        if(!this.showYearList) DatePickerCalendar({model:this.model,currMonth:$currMonth,currYear:$currYear,selectedYear:$selectedYear,selectedMonth:$selectedMonth,selectedDay:$selectedDay,selectedDateString:$showSelected,selectFrom:$selectFrom,selectBefore:$selectBefore,isSelected:$isSelected,typeOfDayArray:$typeOfDayArray})
       }.width('100%').height(300).margin({bottom:20})
 
       Flex({justifyContent:FlexAlign.SpaceBetween}){
