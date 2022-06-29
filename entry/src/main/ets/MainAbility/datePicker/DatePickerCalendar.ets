@@ -1,3 +1,13 @@
+import calendarDay from './calendarDay'
+
+enum DayState {
+  NOT_SELECTABLE,
+  NORMAL_DAY,
+  TODAY_DAY,
+  SELECTED_DAY,
+  IN_RANGE_DAY
+}
+
 @Component
 struct DatePickerCalendar{
   private model: DatePickerCalendar.Model = new DatePickerCalendar.Model();
@@ -7,15 +17,45 @@ struct DatePickerCalendar{
   @Link selectedYear: number
   @Link selectFrom: Date
   @Link selectBefore: Date
+  @Link isSelected:boolean
 
   @State today: number = new Date().getDate();
   @State todayMonth: number = new Date().getMonth();
   @State todayYear: number = new Date().getFullYear();
 
-  @State currMonth: number = new Date().getMonth();
-  @State currYear: number = new Date().getFullYear();
+  @Link currMonth: number
+  @Link currYear: number
 
   @Link selectedDateString : string;
+
+  @Link typeOfDayArray: DayState[]
+
+
+  getTypeOfDay(value:number): DayState{
+    return this.typeOfDayArray[value];
+  }
+
+  onButtonPress(value:number){
+    if(this.isSelected){
+      if(this.selectedDay==this.today && this.selectedMonth==this.todayMonth && this.selectedYear==this.todayYear){
+        this.typeOfDayArray[this.selectedDay-1]=DayState.TODAY_DAY
+      }
+      else this.typeOfDayArray[this.selectedDay-1]=DayState.NORMAL_DAY;
+      this.selectedDay=value+1;
+      this.selectedMonth=this.currMonth;
+      this.selectedYear=this.currYear;
+      this.typeOfDayArray[value]=DayState.SELECTED_DAY
+      this.selectedDateString=String(this.selectedDay).padStart(2,'0')+"/"+String(this.selectedMonth+1).padStart(2,'0')+"/"+String(this.selectedYear)
+    }
+    else{
+      this.isSelected=true;
+      this.selectedDay=value+1;
+      this.selectedMonth=this.currMonth;
+      this.selectedYear=this.currYear;
+      this.typeOfDayArray[value]=DayState.SELECTED_DAY
+      this.selectedDateString=String(this.selectedDay).padStart(2,'0')+"/"+String(this.selectedMonth+1).padStart(2,'0')+"/"+String(this.selectedYear)
+    }
+  }
 
   build(){
     Column() {
@@ -48,72 +88,7 @@ struct DatePickerCalendar{
         // Month grid
         ForEach([...Array(this.model.getDaysInMonth(this.currYear,this.currMonth)).keys()],(day:number) => {
           GridItem() {
-            Column(){
-              if(!this.model.selectable(this.selectFrom,this.selectBefore,new Date(this.currYear,this.currMonth,day+1))){
-                Button({type:ButtonType.Circle}){
-                  Text(day+1+'').fontSize(16).fontColor(Color.Grey)
-                }
-                .backgroundColor(Color.White)
-                .width(30)
-                .height(30)
-                .onClick((event:ClickEvent)=>{
-
-                });
-              }
-              else{
-                // If the date is the selected date: Highlight it
-                if((day+1)==this.selectedDay && this.currMonth==this.selectedMonth && this.currYear==this.selectedYear){
-                  Button({type:ButtonType.Circle}){
-                    Text(day+1+'').fontSize(16).fontColor(Color.White)
-                  }
-                  .backgroundColor(Color.Blue)
-                  .width(30)
-                  .height(30)
-                  .onClick((event:ClickEvent)=>{
-                    this.selectedDateString=String(this.selectedDay).padStart(2,'0')+"/"+String(this.selectedMonth+1).padStart(2,'0')+"/"+String(this.selectedYear)
-
-                  });
-                }
-
-                // If the date is today's date: Encircle it
-                else if((day+1)==this.today && this.currMonth==this.todayMonth && this.currYear==this.todayYear){
-                  Button({type:ButtonType.Circle}){
-                    Text(day+1+'').fontSize(16).fontColor(Color.Black)
-                  }
-                  .backgroundColor(Color.White)
-                  .borderWidth(1)
-                  .borderRadius(100)
-                  .width(30)
-                  .height(30)
-                  .onClick((event:ClickEvent)=>{
-                    this.selectedYear=this.todayYear;
-                    this.selectedMonth=this.todayMonth;
-                    this.selectedDay=this.today;
-                    this.selectedDateString=String(this.selectedDay).padStart(2,'0')+"/"+String(this.selectedMonth+1).padStart(2,'0')+"/"+String(this.selectedYear)
-
-                  });
-                }
-
-
-                else{
-                  Button({type:ButtonType.Circle}){
-                    Text(day+1+'').fontSize(16).fontColor(Color.Black)
-                  }
-                  .backgroundColor(Color.White)
-                  .width(30)
-                  .height(30)
-                  .onClick((event:ClickEvent)=>{
-                    this.selectedYear=this.currYear;
-                    this.selectedMonth=this.currMonth;
-                    this.selectedDay=day+1;
-                    this.selectedDateString=String(this.selectedDay).padStart(2,'0')+"/"+String(this.selectedMonth+1).padStart(2,'0')+"/"+String(this.selectedYear)
-
-                  });
-                }
-
-              }
-
-            }
+            calendarDay({date:day,typeOfDay:this.getTypeOfDay(day),onButtonPress:(value) => this.onButtonPress(value)})
           }
         })
       }.columnsTemplate('1fr 1fr 1fr 1fr 1fr 1fr 1fr')
