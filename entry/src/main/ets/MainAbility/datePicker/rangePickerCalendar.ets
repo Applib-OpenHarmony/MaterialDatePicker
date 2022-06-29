@@ -1,9 +1,19 @@
+import calendarDay from './calendarDay'
+
+enum DayState {
+  NOT_SELECTABLE,
+  NORMAL_DAY,
+  TODAY_DAY,
+  SELECTED_DAY,
+  IN_RANGE_DAY
+}
+
 @Component
 struct rangePickerCalendar{
   private model: rangePickerCalendar.Model = new rangePickerCalendar.Model();
 
-  @State currYear:number = new Date().getFullYear();
-  @State currMonth:number = new Date().getMonth();
+  @Link currYear:number
+  @Link currMonth:number
 
   @Link startDay: number
   @Link startMonth: number
@@ -20,7 +30,9 @@ struct rangePickerCalendar{
   @Link isStartSelected:boolean
   @Link isEndSelected:boolean
 
+
   months:string[] = ['January','February','March','April','May','June','July','August','September','October','November','December']
+
 
   isInBetween(currDate: Date):boolean{
     var startDate: Date = new Date(this.startYear,this.startMonth,this.startDay)
@@ -33,6 +45,99 @@ struct rangePickerCalendar{
     var startDate: Date = new Date(this.startYear,this.startMonth,this.startDay)
     if(currDate>=startDate) return true;
     else return false;
+  }
+
+  @Link typeOfDayArray: DayState[]
+
+  getTypeOfDay(value:number): DayState{
+    return this.typeOfDayArray[value];
+  }
+
+
+  onButtonPress(value:number){
+    if (this.isStartSelected && this.isEndSelected) {
+      if(this.startMonth==this.currMonth && this.startYear==this.currYear){
+        for(var i=this.startDay;i<this.endDay-1;i++){
+          if(this.currYear==this.todayYear && this.currMonth==this.todayMonth && i+1==this.today){
+            this.typeOfDayArray[i]=DayState.TODAY_DAY
+          }
+          else{
+            this.typeOfDayArray[i]=DayState.NORMAL_DAY
+          }
+        }
+      }
+      else{
+        for(var i=0;i<this.endDay-1;i++){
+          if(this.currYear==this.todayYear && this.currMonth==this.todayMonth && i+1==this.today){
+            this.typeOfDayArray[i]=DayState.TODAY_DAY
+          }
+          else{
+            this.typeOfDayArray[i]=DayState.NORMAL_DAY
+          }
+        }
+      }
+      if(this.endYear==this.currYear && this.endMonth==this.currMonth) {
+        if(this.endDay==this.today && this.endMonth==this.todayMonth && this.endYear==this.todayYear){
+          this.typeOfDayArray[this.endDay-1]=DayState.TODAY_DAY
+        }
+        else this.typeOfDayArray[this.endDay-1]=DayState.NORMAL_DAY;
+      }
+      this.endDay = null; this.endMonth = null; this.endYear = null;
+      this.isEndSelected = false;
+      if(this.startYear==this.currYear && this.startMonth==this.currMonth) {
+        if(this.startDay==this.today && this.startMonth==this.todayMonth && this.startYear==this.todayYear){
+          this.typeOfDayArray[this.startDay-1]=DayState.TODAY_DAY
+        }
+        else this.typeOfDayArray[this.startDay-1]=DayState.NORMAL_DAY;
+      }
+      this.startDay = value + 1;
+      this.startMonth = this.currMonth;
+      this.startYear = this.currYear;
+      this.isStartSelected = true;
+      this.typeOfDayArray[this.startDay-1]=DayState.SELECTED_DAY;
+    }
+
+    else if (this.isStartSelected && !this.isEndSelected) {
+      if (this.isAhead(new Date(this.currYear, this.currMonth, value + 1))) {
+        this.endDay = value + 1;
+        this.endMonth = this.currMonth;
+        this.endYear = this.currYear;
+        this.isEndSelected = true;
+        this.typeOfDayArray[this.endDay-1]=DayState.SELECTED_DAY;
+        if(this.startMonth==this.currMonth && this.startYear==this.currYear){
+          for(var i=this.startDay;i<this.endDay-1;i++){
+            this.typeOfDayArray[i]=DayState.IN_RANGE_DAY;
+          }
+        }
+        else{
+          for(var i=0;i<this.endDay-1;i++){
+            this.typeOfDayArray[i]=DayState.IN_RANGE_DAY;
+          }
+        }
+      }
+      else {
+        if(this.startYear==this.currYear && this.startMonth==this.currMonth) {
+          if(this.startDay==this.today && this.startMonth==this.todayMonth && this.startYear==this.todayYear){
+            this.typeOfDayArray[this.startDay-1]=DayState.TODAY_DAY
+          }
+          else this.typeOfDayArray[this.startDay-1]=DayState.NORMAL_DAY;
+        }
+        this.startDay = value + 1;
+        this.startMonth = this.currMonth;
+        this.startYear = this.currYear;
+        this.isStartSelected = true;
+        this.isEndSelected = false;
+        this.typeOfDayArray[this.startDay-1]=DayState.SELECTED_DAY;
+      }
+    }
+    else {
+      this.startDay = value + 1;
+      this.startMonth = this.currMonth;
+      this.startYear = this.currYear;
+      this.isStartSelected = true;
+      this.isEndSelected = false;
+      this.typeOfDayArray[this.startDay-1]=DayState.SELECTED_DAY;
+    }
   }
 
   build(){
@@ -65,191 +170,9 @@ struct rangePickerCalendar{
         })
 
         ForEach([...Array(this.model.getDaysInMonth(this.currYear, this.currMonth)).keys()], (day: number) => {
-          // cases
-          if ((this.isStartSelected && this.startYear == this.currYear && this.startMonth == this.currMonth && this.startDay == day + 1)) {
-            GridItem() {
-              Column() {
-                Button({ type: ButtonType.Circle }) {
-                  Text(day + 1 + '').fontSize(16).fontColor(Color.White)
-                }
-                .backgroundColor(Color.Blue)
-                .width(30)
-                .height(30)
-                .onClick((event: ClickEvent) => {
-                  // if end date is not selected, then make enddate==startdate
-                  if (!this.isEndSelected) {
-                    this.endDay = day + 1;
-                    this.endMonth = this.currMonth;
-                    this.endYear = this.currYear;
-                    this.isEndSelected = true;
-
-                  }
-
-                  // if an end date is selected and a range is selected, then re-intialise it by making enddate==null
-                  else {
-                    this.endDay = null
-                    this.endMonth = null;
-                    this.endYear = null;
-                    this.startDay = day + 1;
-                    this.startMonth = this.currMonth;
-                    this.startYear = this.currYear;
-                    this.isStartSelected = true;
-                    this.isEndSelected = false;
-                  }
-                });
-              }
-            }
+          GridItem() {
+            calendarDay({date:day,typeOfDay:this.getTypeOfDay(day),onButtonPress:(value) => this.onButtonPress(value)})
           }
-
-          else if ((this.isEndSelected && this.endYear == this.currYear && this.endMonth == this.currMonth && this.endDay == day + 1)) {
-            GridItem() {
-              Column() {
-                Button({ type: ButtonType.Circle }) {
-                  Text(day + 1 + '').fontSize(16).fontColor(Color.White)
-                }
-                .backgroundColor(Color.Blue)
-                .width(30)
-                .height(30)
-                .onClick((event: ClickEvent) => {
-                  // re-initialize start date and make end date null
-                  this.endDay = null
-                  this.endMonth = null;
-                  this.endYear = null;
-                  this.startDay = day + 1;
-                  this.startMonth = this.currMonth;
-                  this.startYear = this.currYear;
-                  this.isStartSelected = true;
-                  this.isEndSelected = false;
-                });
-              }
-            }
-          }
-
-          else if (this.isStartSelected && this.isEndSelected && this.isInBetween(new Date(this.currYear, this.currMonth, day + 1))) {
-            GridItem() {
-              Column() {
-                Button({ type: ButtonType.Circle }) {
-                  Text(day + 1 + '').fontSize(16).fontColor(Color.Black)
-                }
-                .backgroundColor(Color.White)
-                .width(30)
-                .height(30)
-                .onClick((event: ClickEvent) => {
-                  // re-initialize start date and make end date null
-                  this.endDay = null
-                  this.endMonth = null;
-                  this.endYear = null;
-                  this.startDay = day + 1;
-                  this.startMonth = this.currMonth;
-                  this.startYear = this.currYear;
-                  this.isStartSelected = true;
-                  this.isEndSelected = false;
-                });
-              }
-            }.backgroundColor(Color.Blue - 2)
-          }
-
-          else if (this.todayYear == this.currYear && this.todayMonth == this.currMonth && this.today == day + 1) {
-            GridItem() {
-              Column() {
-                Button({ type: ButtonType.Circle }) {
-                  Text(day + 1 + '').fontSize(16).fontColor(Color.Black)
-                }
-                .backgroundColor(Color.White)
-                .borderWidth(1)
-                .borderRadius(100)
-                .width(30)
-                .height(30)
-                .onClick((event: ClickEvent) => {
-                  // same as else
-                  if (this.isStartSelected && this.isEndSelected) {
-                    this.endDay = null
-                    this.endMonth = null;
-                    this.endYear = null;
-                    this.startDay = day + 1;
-                    this.startMonth = this.currMonth;
-                    this.startYear = this.currYear;
-                    this.isStartSelected = true;
-                    this.isEndSelected = false;
-                  }
-                  else if (this.isStartSelected && !this.isEndSelected) {
-                    if (this.isAhead(new Date(this.currYear, this.currMonth, day + 1))) {
-                      this.endDay = day + 1;
-                      this.endMonth = this.currMonth;
-                      this.endYear = this.currYear;
-                      this.isEndSelected = true;
-                    }
-                    else {
-                      this.startDay = day + 1;
-                      this.startMonth = this.currMonth;
-                      this.startYear = this.currYear;
-                      this.isStartSelected = true;
-                      this.isEndSelected = false;
-                    }
-                  }
-                  else {
-                    this.startDay = day + 1;
-                    this.startMonth = this.currMonth;
-                    this.startYear = this.currYear;
-                    this.isStartSelected = true;
-                    this.isEndSelected = false;
-                  }
-                });
-
-              }
-            }
-          }
-
-          else {
-            GridItem() {
-              Column() {
-                Button({ type: ButtonType.Circle }) {
-                  Text(day + 1 + '').fontSize(16).fontColor(Color.Black)
-                }
-                .backgroundColor(Color.White)
-                .width(30)
-                .height(30)
-                .onClick((event: ClickEvent) => {
-                  if (this.isStartSelected && this.isEndSelected) {
-                    this.endDay = null
-                    this.endMonth = null;
-                    this.endYear = null;
-                    this.startDay = day + 1;
-                    this.startMonth = this.currMonth;
-                    this.startYear = this.currYear;
-                    this.isStartSelected = true;
-                    this.isEndSelected = false;
-
-                  }
-                  else if (this.isStartSelected && !this.isEndSelected) {
-                    if (this.isAhead(new Date(this.currYear, this.currMonth, day + 1))) {
-                      this.endDay = day + 1;
-                      this.endMonth = this.currMonth;
-                      this.endYear = this.currYear;
-                      this.isEndSelected = true;
-
-                    }
-                    else {
-                      this.startDay = day + 1;
-                      this.startMonth = this.currMonth;
-                      this.startYear = this.currYear;
-                      this.isStartSelected = true;
-                      this.isEndSelected = false;
-                    }
-                  }
-                  else {
-                    this.startDay = day + 1;
-                    this.startMonth = this.currMonth;
-                    this.startYear = this.currYear;
-                    this.isStartSelected = true;
-                    this.isEndSelected = false;
-                  }
-                });
-              }
-            }
-          }
-
-
         })
       }
       .columnsTemplate('1fr 1fr 1fr 1fr 1fr 1fr 1fr')
