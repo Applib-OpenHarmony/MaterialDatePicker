@@ -1,0 +1,276 @@
+import MaterialDatePickerCalendar from './MaterialDatePickerCalendar'
+import yearSelect from './yearSelect'
+
+enum DayState {
+  NOT_SELECTABLE,
+  NORMAL_DAY,
+  TODAY_DAY,
+  SELECTED_DAY,
+  IN_RANGE_DAY
+}
+
+@Component
+struct MaterialDatePicker{
+  private datePickerModel: MaterialDatePicker.Model = new MaterialDatePicker.Model();
+  private model:MaterialDatePickerCalendar.Model = new MaterialDatePickerCalendar.Model()
+  private yearModel: yearSelect.Model = new yearSelect.Model();
+
+  // common link & state variables
+  @State isRangePicker: boolean = false;
+  @State currYear:number = new Date().getFullYear();
+  @State currMonth:number = new Date().getMonth();
+  @State today: number = new Date().getDate();
+  @State todayMonth: number = new Date().getMonth();
+  @State todayYear: number = new Date().getFullYear();
+  @State componentTitle: string = this.isRangePicker?'Selected range':'Select date';
+  @State yearStartRange:number = 2000
+  @State yearEndRange:number = 2100
+  @State selectFrom: Date = new Date(this.yearStartRange,0,1);
+  @State selectBefore: Date = new Date(this.yearEndRange,11,31);
+  @State showYearList: boolean = false;
+  @State typeOfDayArray: DayState[]=this.isRangePicker?this.makeRangePickerArray():this.makeArray();
+
+  weekdays:string[] = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']
+  months:string[] = ['January','February','March','April','May','June','July','August','September','October','November','December']
+
+
+  // Single-Date Picker link & state variables
+  @State selectedDay: number = new Date().getDate();
+  @State selectedMonth: number = new Date().getMonth();
+  @State selectedYear: number = new Date().getFullYear();
+  @State showSelected: string = String(new Date().getDate()).padStart(2,'0')+"-"+String(new Date().getMonth() + 1).padStart(2,'0')+"-"+String(new Date().getFullYear())
+  @State isSelected:boolean =false
+
+  // Range-Picker link & state variables
+  @State startDay: number = new Date().getDate();
+  @State startMonth: number = new Date().getMonth();
+  @State startYear: number = new Date().getFullYear();
+  @State endDay: number = new Date().getDate();
+  @State endMonth: number = new Date().getMonth();
+  @State endYear: number = new Date().getFullYear();
+  @State isStartSelected:boolean = false;
+  @State isEndSelected:boolean = false;
+
+  // Common methods
+  closeComponent:()=>void
+  sendDate:(string)=>void
+
+  // Single-Date Picker methods
+  makeArray(): DayState[]{
+    var arr: DayState[] = new Array(this.model.getDaysInMonth(this.currYear,this.currMonth))
+    for(var i=0;i<arr.length;i++){
+      if(this.currYear==new Date().getFullYear() && this.currMonth==new Date().getMonth() && i+1==new Date().getDate()){
+        arr[i]=DayState.TODAY_DAY;
+      }
+      else if(this.isSelected && this.selectedYear==this.currYear && this.selectedMonth==this.currMonth && i+1==this.selectedDay){
+        arr[i]=DayState.SELECTED_DAY;
+      }
+      else{
+        arr[i]=DayState.NORMAL_DAY;
+      }
+    }
+    return arr;
+  }
+
+  // Range-Picker methods
+  isInBetween(currDate: Date):boolean{
+    var startDate: Date = new Date(this.startYear,this.startMonth,this.startDay)
+    var endDate: Date = new Date(this.endYear,this.endMonth,this.endDay)
+    if(startDate<currDate && currDate<endDate) return true;
+    else return false;
+  }
+
+  makeRangePickerArray(): DayState[]{
+    var arr: DayState[] = new Array(this.model.getDaysInMonth(this.currYear,this.currMonth))
+    for(var i=0;i<arr.length;i++){
+      if(this.currYear==new Date().getFullYear() && this.currMonth==new Date().getMonth() && i+1==new Date().getDate()){
+        arr[i]=DayState.TODAY_DAY;
+      }
+      else if(this.isStartSelected && this.startYear==this.currYear && this.startMonth==this.currMonth && i+1==this.startDay){
+        arr[i]=DayState.SELECTED_DAY;
+      }
+      else if(this.isEndSelected && this.endYear==this.currYear && this.endMonth==this.currMonth && i+1==this.endDay){
+        arr[i]=DayState.SELECTED_DAY;
+      }
+      else if(this.isStartSelected && this.isEndSelected && this.isInBetween(new Date(this.currYear,this.currMonth,i+1))){
+        arr[i]=DayState.IN_RANGE_DAY;
+      }
+      else{
+        arr[i]=DayState.NORMAL_DAY;
+      }
+    }
+    return arr;
+  }
+
+  build(){
+    Column(){
+      // Component title and quit button
+      Flex({justifyContent:FlexAlign.SpaceBetween}){
+        // Dialog Title
+        Text(this.componentTitle).fontColor(Color.White).fontSize(15).fontFamily('Times').margin({left:10,top:10})
+
+        //Quit Button
+        Button({type:ButtonType.Circle}){
+          Image($r("app.media.icon")).width(20).height(20)
+        }.width(20).height(20).margin({right:40,top:10})
+        .onClick((event:ClickEvent)=>{
+          this.closeComponent();
+        })
+      }
+      .backgroundColor(Color.Blue)
+      .width('100%')
+      .height(60)
+
+      // Selected date or range and text dialog button
+      Row(){
+        // Selected date or range
+
+        // TO-DO: Make a function that return the selected date/range in string format
+        if(!this.isRangePicker){
+          Text(this.weekdays[new Date(this.selectedYear,this.selectedMonth,this.selectedDay).getDay()]+", "+ this.months[this.selectedMonth]+" "+String(this.selectedDay).padStart(2,'0')).fontColor(Color.White).fontSize(30).fontFamily('Times').fontWeight(FontWeight.Bold).margin({left:15})
+        }
+        else{
+          if(!this.isStartSelected && !this.isEndSelected){
+            Text("Start date - End date").fontColor(Color.White).fontSize(30).fontFamily('Times').fontWeight(FontWeight.Bold).margin({left:15})
+          }
+          if(this.isStartSelected && !this.isEndSelected){
+            if(this.startYear==this.todayYear){
+              Text(this.months[this.startMonth]+" "+this.startDay+" - End date").fontColor(Color.White).fontSize(28).fontFamily('Times').fontWeight(FontWeight.Bold).margin({left:15})
+            }
+            else{
+              Text(this.months[this.startMonth]+" "+this.startDay+", "+this.startYear+" - End date").fontColor(Color.White).fontSize(22).fontFamily('Times').fontWeight(FontWeight.Bold).margin({left:15})
+            }
+          }
+          if(this.isStartSelected && this.isEndSelected){
+            if(this.startYear==this.todayYear && this.endYear==this.todayYear){
+              Text(this.months[this.startMonth]+" "+this.startDay+" - "+this.months[this.endMonth]+" "+this.endDay).fontColor(Color.White).fontSize(30).fontFamily('Times').fontWeight(FontWeight.Bold).margin({left:15})
+            }
+            else{
+              Text(this.months[this.startMonth]+" "+this.startDay+", "+this.startYear+" - "+this.months[this.endMonth]+" "+this.endDay+", "+this.endYear).fontColor(Color.White).fontSize(30).fontFamily('Times').fontWeight(FontWeight.Bold).margin({left:15})
+            }
+          }
+        }
+
+        // Text-Dialog Button
+        Button({type:ButtonType.Circle}){
+          Image($r("app.media.icon")).width(20).height(20)
+        }.width(20).height(20).margin({right:20,top:10})
+        .onClick(()=>{
+
+        })
+      }
+      .justifyContent(FlexAlign.SpaceBetween)
+      .backgroundColor(Color.Blue)
+      .width('100%')
+      .height(60)
+
+      // Month and year navigation panel
+      Flex({justifyContent:FlexAlign.SpaceBetween}){
+        Column(){
+          Row(){
+            // Current month and year
+            Text(this.months[this.currMonth] + " " + this.currYear).fontSize(15).fontFamily('Times New Roman')
+
+            // Button to open year-select grid
+            Button({type:ButtonType.Circle}){
+              Image('app.media.icon').width(10).height(10)
+            }.width(15).height(15).margin({left:5})
+            .onClick((event:ClickEvent)=>{
+              if(this.showYearList){
+                this.showYearList=false;
+                this.typeOfDayArray=this.makeArray();
+              }
+              else this.showYearList=true;
+            })
+          }
+        }
+        Column(){
+          Row(){
+            // Navigate to previous month button
+            Button({type:ButtonType.Circle}){
+              Image($r("app.media.icon")).width(20).height(20)
+            }.width(20).height(20).margin({right:10})
+            .onClick((event:ClickEvent) =>{
+              this.currMonth-=1;
+              if(this.currMonth==-1) {
+                this.currMonth=11
+                this.currYear-=1
+              }
+              this.typeOfDayArray=this.makeArray();
+            })
+
+            // Navigate to next month button
+            Button({type:ButtonType.Circle}){
+              Image($r("app.media.icon")).width(20).height(20)
+            }.width(20).height(20)
+            .onClick((event:ClickEvent) =>{
+              this.currMonth+=1;
+              if(this.currMonth==12) {
+                this.currMonth=0
+                this.currYear+=1
+              }
+              this.typeOfDayArray=this.makeArray();
+            })
+          }
+          .justifyContent(FlexAlign.End)
+        }
+      }
+      .height(30)
+      .margin({left:15,right:15,top:10,bottom:10})
+
+      Row(){
+        // Year Grid
+        if(this.showYearList) yearSelect({yearModel:this.yearModel,selectedYear:$currYear,yearStartRange:$yearStartRange,yearEndRange:$yearEndRange});
+
+        // Month Calendar
+        if(!this.showYearList){
+          MaterialDatePickerCalendar({model:this.model,isRangePicker:$isRangePicker,currMonth:$currMonth,currYear:$currYear,selectFrom:$selectFrom,selectBefore:$selectBefore,typeOfDayArray:$typeOfDayArray,selectedYear:$selectedYear,selectedMonth:$selectedMonth,selectedDay:$selectedDay,selectedDateString:$showSelected,isSelected:$isSelected,startDay:$startDay,startMonth:$startMonth,startYear:$startYear,endDay:$endDay,endMonth:$endMonth,endYear:$endYear,isStartSelected:$isStartSelected,isEndSelected:$isEndSelected})
+        }
+      }.width('100%').height(300).margin({bottom:20})
+
+      Flex({justifyContent:FlexAlign.SpaceBetween}){
+        // Today button
+        Column(){
+          Row(){
+            Button("Today",{type:ButtonType.Normal}).width(100).backgroundColor(Color.White).fontColor(Color.Black).onClick((event:ClickEvent)=>{
+              this.currMonth=new Date().getMonth();
+              this.currYear=new Date().getFullYear();
+            }).padding(10)
+          }
+        }
+
+        Column(){
+          //Cancel and confirm buttons
+          Row(){
+            // Cancel button
+            Button("Cancel",{type:ButtonType.Normal}).width(100).backgroundColor(Color.White).fontColor(Color.Black).onClick((event:ClickEvent)=>{
+              this.closeComponent();
+            }).padding(10)
+
+            // Confirm button
+            Button("Select",{type:ButtonType.Normal}).width(100).borderRadius(2).fontWeight(20).fontSize(18).onClick((event:ClickEvent)=>{
+              if(!this.isRangePicker){
+                this.sendDate(this.showSelected)
+              }
+              else{
+                if(this.isStartSelected && this.isEndSelected){
+                  this.sendDate(String(this.startDay).padStart(2,'0')+"/"+String(this.startMonth+1).padStart(2,'0')+"/"+this.startYear+" - "+String(this.endDay).padStart(2,'0')+"/"+String(this.endMonth+1).padStart(2,'0')+"/"+this.endYear)
+                }
+              }
+              this.closeComponent();
+            }).padding(10)
+          }
+        }.justifyContent(FlexAlign.End).margin({right:5})
+      }
+
+    }.height(550)
+  }
+}
+
+namespace MaterialDatePicker{
+  export class Model{
+
+  }
+}
+
+export default MaterialDatePicker;
