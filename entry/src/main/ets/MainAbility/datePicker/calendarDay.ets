@@ -1,5 +1,4 @@
 enum DayState {
-  NOT_SELECTABLE,
   NORMAL_DAY,
   TODAY_DAY,
   SELECTED_DAY,
@@ -8,6 +7,7 @@ enum DayState {
 
 @Component
 struct calendarDay {
+  @State themeColor: Color = Color.Blue
   @State backColor : Color = Color.White
   @State fontColor : Color = Color.Black
   @State boundary : number = 0
@@ -18,10 +18,10 @@ struct calendarDay {
   onButtonPress: (number) => void
 
   getBackColor(): Color{
-    if(this.typeOfDay==3){
-      return Color.Blue
+    if(this.typeOfDay==2){
+      return this.themeColor
     }
-    else if(this.typeOfDay==4){
+    else if(this.typeOfDay==3){
       return Color.Grey
     }
     else{
@@ -30,7 +30,7 @@ struct calendarDay {
   }
 
   getFontColor() : Color{
-    if(this.typeOfDay==3){
+    if(this.typeOfDay==2){
       return Color.White
     }
     else{
@@ -39,7 +39,7 @@ struct calendarDay {
   }
 
   getBorderWidth() : number{
-    if(this.typeOfDay==2) return 1;
+    if(this.typeOfDay==1) return 1;
     else return 0;
   }
 
