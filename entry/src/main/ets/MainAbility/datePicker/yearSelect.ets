@@ -5,6 +5,7 @@ struct yearSelect{
   @Link yearStartRange:number
   @Link yearEndRange:number
   @Link selectedYear:number
+  @State themeColor: Color = Color.Blue
 
 
   build(){
@@ -18,7 +19,7 @@ struct yearSelect{
               }
               .width(80)
               .height(20)
-              .backgroundColor(Color.Blue)
+              .backgroundColor(this.themeColor)
               .borderRadius(5)
               .onClick((event:ClickEvent)=>{
 
