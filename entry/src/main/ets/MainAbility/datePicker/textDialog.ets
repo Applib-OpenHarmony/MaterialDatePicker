@@ -7,6 +7,7 @@ struct textDialog{
 
   @State yearStartRange:number = 1900
   @State yearEndRange:number = 2100
+  @State themeColor: Color = Color.Blue
   @State inputDate: string = "dd/mm/yyyy"
   @State startDate: string = "dd/mm/yyyy"
   @State endDate: string = "dd/mm/yyyy"
@@ -57,15 +58,15 @@ struct textDialog{
         Text(this.isRangePicker?"INPUT RANGE":"INPUT DATE").fontColor(Color.White).fontSize(12).fontFamily('Times').margin({left:15,top:10})
 
       }
-      .backgroundColor(Color.Blue)
+      .backgroundColor(this.themeColor)
       .width('100%')
       .height(60)
 
       Row(){
         Text(this.isRangePicker?"Enter Range":"Enter Date").fontColor(Color.White).fontSize(40).fontFamily('Times').fontWeight(10).margin({left:15})
         Button({type:ButtonType.Circle}){
-          Image($r("app.media.icon")).width(20).height(20)
-        }.width(20).height(20).margin({right:20,top:10})
+          Image($r("app.media.calendar")).width(20).height(20)
+        }.width(20).height(20).margin({right:20,top:10}).backgroundColor(this.themeColor)
         .onClick((event:ClickEvent)=>{
           this.controller.close()
           this.cancel()
@@ -73,7 +74,7 @@ struct textDialog{
         })
       }
       .justifyContent(FlexAlign.SpaceBetween)
-      .backgroundColor(Color.Blue)
+      .backgroundColor(this.themeColor)
       .width('100%')
       .height(60)
       .margin({bottom:20})
@@ -178,7 +179,7 @@ struct textDialog{
         }).padding(10)
 
         // Confirm button
-        Button("Ok",{type:ButtonType.Normal}).width(100).borderRadius(2).fontWeight(20).fontSize(18).onClick((event:ClickEvent)=>{
+        Button("Ok",{type:ButtonType.Normal}).width(100).backgroundColor(this.themeColor).borderRadius(2).fontWeight(20).fontSize(18).onClick((event:ClickEvent)=>{
           if(!this.isRangePicker){
             if(this.isValidDateFormat(this.inputDate)){
               this.confirm(this.inputDate)
