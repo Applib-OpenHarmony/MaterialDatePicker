@@ -30,8 +30,8 @@ struct testScreen{
     Column(){
       Flex({justifyContent:FlexAlign.Start}){
         Button({type:ButtonType.Circle}){
-          Image($r("app.media.icon")).width(20).height(20)
-        }.width(20).height(20).margin({left:10})
+          Image($r("app.media.menu")).width(30).height(30)
+        }.width(30).height(30).margin({left:10}).backgroundColor(Color.White)
         Text('Date Picker').fontFamily("San Francisco").fontSize(25).fontWeight(FontWeight.Bold).margin({left:20,bottom:20})
       }
       Divider().width('100%').strokeWidth(4).color(0xEAEAEA)
@@ -50,8 +50,8 @@ struct testScreen{
         Column(){
           Row(){
             Button({type:ButtonType.Circle}){
-              Image($r("app.media.icon")).width(20).height(20)
-            }.width(20).height(20)
+              Image($r("app.media.calendar")).width(20).height(20)
+            }.width(20).height(20).backgroundColor(Color.White)
             .onClick(() => {
               this.isRangePicker = false;
               this.dialogController.open()
@@ -76,8 +76,8 @@ struct testScreen{
         Column(){
           Row(){
             Button({type:ButtonType.Circle}){
-              Image($r("app.media.icon")).width(20).height(20)
-            }.width(20).height(20)
+              Image($r("app.media.range_calendar")).width(20).height(20)
+            }.width(20).height(20).backgroundColor(Color.White)
             .onClick(() => {
               this.isRangePicker = true;
               this.dialogController.open()
