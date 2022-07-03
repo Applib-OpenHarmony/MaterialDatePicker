@@ -3,7 +3,6 @@ import yearSelect from './yearSelect'
 import textDialog from './textDialog'
 
 enum DayState {
-  NOT_SELECTABLE,
   NORMAL_DAY,
   TODAY_DAY,
   SELECTED_DAY,
@@ -16,8 +15,6 @@ struct MaterialDatePicker{
   private model:MaterialDatePickerCalendar.Model = new MaterialDatePickerCalendar.Model();
   private yearModel: yearSelect.Model = new yearSelect.Model();
 
-  private swiperController: SwiperController = new SwiperController ()
-
   // common link & state variables
   @State isRangePicker: boolean = false;
   @State currYear:number = new Date().getFullYear();
@@ -25,13 +22,10 @@ struct MaterialDatePicker{
   @State showYearList: boolean = false;
   @State yearStartRange:number = 2000
   @State yearEndRange:number = 2100
-  @State selectFrom: Date = new Date(this.yearStartRange,0,1);
-  @State selectBefore: Date = new Date(this.yearEndRange,11,31);
+  @State themeColor: Color = 0x5e00ff
   weekdays:string[] = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']
   months:string[] = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
   @State typeOfDayArray: DayState[]=new Array();
-
-  @State prevIdx: number = this.currMonth
 
   // Single Date Picker link & state variables
   @State selectedDay: number = new Date().getDate();
@@ -143,7 +137,7 @@ struct MaterialDatePicker{
   sendDate:(string)=>void
 
   dialogController : CustomDialogController = new CustomDialogController({
-    builder: textDialog({confirm:(value)=> this.sendDate(value),cancel:this.exitApp,openPicker:()=>this.openComponent()}),
+    builder: textDialog({confirm:(value)=> this.sendDate(value),cancel:this.exitApp,openPicker:()=>this.openComponent(),isRangePicker:this.isRangePicker&&true,themeColor:this.themeColor+0}),
     cancel: this.exitApp,
     autoCancel: true,
     alignment: DialogAlignment.Center,
@@ -151,6 +145,9 @@ struct MaterialDatePicker{
   exitApp () {
     console.log("Cancel text dialog!");
   }
+
+  private swiperController: SwiperController = new SwiperController ()
+  @State prevIdx: number = this.currMonth
 
   build(){
     Column(){
@@ -161,13 +158,13 @@ struct MaterialDatePicker{
 
         //Quit Button
         Button({type:ButtonType.Circle}){
-          Image($r("app.media.icon")).width(20).height(20)
-        }.width(20).height(20).margin({right:40,top:10})
+          Image($r("app.media.close")).width(30).height(30)
+        }.width(30).height(30).margin({right:40,top:10}).backgroundColor(this.themeColor)
         .onClick((event:ClickEvent)=>{
           this.closeComponent();
         })
       }
-      .backgroundColor(Color.Blue)
+      .backgroundColor(this.themeColor)
       .width('100%')
       .height(60)
 
@@ -178,15 +175,15 @@ struct MaterialDatePicker{
 
         // Text dialog button
         Button({type:ButtonType.Circle}){
-          Image($r("app.media.icon")).width(20).height(20)
-        }.width(20).height(20).margin({right:20,top:10})
+          Image($r("app.media.edit")).width(25).height(25)
+        }.width(30).height(30).margin({right:20,top:10}).backgroundColor(this.themeColor)
         .onClick((event:ClickEvent)=>{
           this.closeComponent();
           this.dialogController.open();
         })
       }
       .justifyContent(FlexAlign.SpaceBetween)
-      .backgroundColor(Color.Blue)
+      .backgroundColor(this.themeColor)
       .width('100%')
       .height(60)
 
@@ -199,8 +196,8 @@ struct MaterialDatePicker{
 
             // Button to open year-select grid
             Button({type:ButtonType.Circle}){
-              Image('app.media.icon').width(10).height(10)
-            }.width(15).height(15).margin({left:5})
+              Image('app.media.arrow_back').width(20).height(20)
+            }.width(20).height(20).margin({left:5}).backgroundColor(this.themeColor)
             .onClick((event:ClickEvent)=>{
               if(this.showYearList){
                 this.showYearList=false;
@@ -219,8 +216,8 @@ struct MaterialDatePicker{
           Row(){
             // Navigate to previous month button
             Button({type:ButtonType.Circle}){
-              Image($r("app.media.icon")).width(20).height(20)
-            }.width(20).height(20).margin({right:10})
+              Image($r("app.media.arrow_back")).width(20).height(20)
+            }.width(20).height(20).margin({right:15}).backgroundColor(Color.White)
             .onClick((event:ClickEvent) =>{
               this.currMonth-=1;
               if(this.currMonth==-1) {
@@ -237,8 +234,8 @@ struct MaterialDatePicker{
 
             // Navigate to next month button
             Button({type:ButtonType.Circle}){
-              Image($r("app.media.icon")).width(20).height(20)
-            }.width(20).height(20)
+              Image($r("app.media.arrow_forward")).width(20).height(20)
+            }.width(20).height(20).backgroundColor(Color.White)
             .onClick((event:ClickEvent) =>{
               this.currMonth+=1;
               if(this.currMonth==12) {
@@ -261,40 +258,40 @@ struct MaterialDatePicker{
 
       Row(){
         // Year Grid
-        if(this.showYearList) yearSelect({yearModel:this.yearModel,selectedYear:$currYear,yearStartRange:$yearStartRange,yearEndRange:$yearEndRange});
+        if(this.showYearList) yearSelect({yearModel:this.yearModel,selectedYear:$currYear,yearStartRange:$yearStartRange,yearEndRange:$yearEndRange,themeColor:this.themeColor+0});
 
         // Month Calendar
-//        if(!this.showYearList) MaterialDatePickerCalendar({model:this.model,isRangePicker:$isRangePicker,currMonth:this.currMonth+0,currYear:this.currYear+0,selectedYear:$selectedYear,selectedMonth:$selectedMonth,selectedDay:$selectedDay,selectedDateString:$showSelected,isSelected:$isSelected,typeOfDayArray:$typeOfDayArray,startDay:$startDay,startMonth:$startMonth,startYear:$startYear,endDay:$endDay,endMonth:$endMonth,endYear:$endYear,isStartSelected:$isStartSelected,isEndSelected:$isEndSelected})
-        if(!this.showYearList){
-          Swiper(this.swiperController){
-            ForEach([...new Array(12).keys()], (month:number)=>{
-              MaterialDatePickerCalendar({model:this.model,isRangePicker:$isRangePicker,currMonth:month,currYear:this.currYear+0,selectedYear:$selectedYear,selectedMonth:$selectedMonth,selectedDay:$selectedDay,selectedDateString:$showSelected,isSelected:$isSelected,typeOfDayArray:$typeOfDayArray,startDay:$startDay,startMonth:$startMonth,startYear:$startYear,endDay:$endDay,endMonth:$endMonth,endYear:$endYear,isStartSelected:$isStartSelected,isEndSelected:$isEndSelected})
-            })
-          }
-          .index(this.currMonth)
-          .autoPlay(false)
-          .indicator( false ) // enable indicator by default
-          .loop( true ) // enable loop playback by default
-          .duration(1000)
-          .vertical( false ) // default horizontal switch
-          .itemSpace(0)
-          .onChange((index: number) => {
-            if(this.prevIdx==11 && index==0) {
-              this.currYear++;
-              this.currMonth=0;
-            }
-            if(this.prevIdx==0 && index==11) {
-              this.currYear--;
-              this.currMonth=11;
-            }
-            else{
-              this.currMonth=index;
-            }
-            this.typeOfDayArray=this.makeArray();
-            console.log("prevIdx: "+this.prevIdx+", "+"current index: "+index);
-            this.prevIdx = index;
-          })
-        }
+        if(!this.showYearList) MaterialDatePickerCalendar({model:this.model,isRangePicker:$isRangePicker,currMonth:this.currMonth+0,currYear:this.currYear+0,selectedYear:$selectedYear,selectedMonth:$selectedMonth,selectedDay:$selectedDay,selectedDateString:$showSelected,isSelected:$isSelected,typeOfDayArray:$typeOfDayArray,startDay:$startDay,startMonth:$startMonth,startYear:$startYear,endDay:$endDay,endMonth:$endMonth,endYear:$endYear,isStartSelected:$isStartSelected,isEndSelected:$isEndSelected,themeColor:this.themeColor+0})
+//        if(!this.showYearList){
+//          Swiper(this.swiperController){
+//            ForEach([...new Array(12).keys()], (month:number)=>{
+//              MaterialDatePickerCalendar({model:this.model,isRangePicker:$isRangePicker,currMonth:month,currYear:this.currYear+0,selectedYear:$selectedYear,selectedMonth:$selectedMonth,selectedDay:$selectedDay,selectedDateString:$showSelected,isSelected:$isSelected,typeOfDayArray:$typeOfDayArray,startDay:$startDay,startMonth:$startMonth,startYear:$startYear,endDay:$endDay,endMonth:$endMonth,endYear:$endYear,isStartSelected:$isStartSelected,isEndSelected:$isEndSelected,themeColor:this.themeColor+0})
+//            })
+//          }
+//          .index(this.currMonth)
+//          .autoPlay(false)
+//          .indicator( false ) // enable indicator by default
+//          .loop( true ) // enable loop playback by default
+//          .duration(1000)
+//          .vertical( false ) // default horizontal switch
+//          .itemSpace(0)
+//          .onChange((index: number) => {
+//            if(this.prevIdx==11 && index==0) {
+//              this.currYear++;
+//              this.currMonth=0;
+//            }
+//            if(this.prevIdx==0 && index==11) {
+//              this.currYear--;
+//              this.currMonth=11;
+//            }
+//            else{
+//              this.currMonth=index;
+//            }
+//            this.typeOfDayArray=this.makeArray();
+//            console.log("prevIdx: "+this.prevIdx+", "+"current index: "+index);
+//            this.prevIdx = index;
+//          })
+//        }
 
       }.width('100%').height(300).margin({bottom:20})
 
@@ -305,6 +302,12 @@ struct MaterialDatePicker{
             Button("Today",{type:ButtonType.Normal}).width(100).backgroundColor(Color.White).fontColor(Color.Black).onClick((event:ClickEvent)=>{
               this.currMonth=new Date().getMonth();
               this.currYear=new Date().getFullYear();
+              if(!this.isRangePicker){
+                this.typeOfDayArray=this.makeArray();
+              }
+              else {
+                this.typeOfDayArray=this.makeArray2();
+              }
             }).padding(10)
           }
         }
@@ -318,7 +321,7 @@ struct MaterialDatePicker{
             }).padding(10)
 
             // Confirm button
-            Button("Select",{type:ButtonType.Normal}).width(100).borderRadius(2).fontWeight(20).fontSize(18).onClick((event:ClickEvent)=>{
+            Button("Select",{type:ButtonType.Normal}).width(100).backgroundColor(this.themeColor).borderRadius(2).fontWeight(20).fontSize(18).onClick((event:ClickEvent)=>{
               if(!this.isRangePicker){
                 if(this.isSelected){
                   this.sendDate(this.showSelected);
