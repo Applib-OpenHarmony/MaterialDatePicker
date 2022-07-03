@@ -1,7 +1,6 @@
 import calendarDay from './calendarDay'
 
 enum DayState {
-  NOT_SELECTABLE,
   NORMAL_DAY,
   TODAY_DAY,
   SELECTED_DAY,
@@ -19,9 +18,9 @@ struct MaterialDatePickerCalendar{
   @State today: number = new Date().getDate();
   @State todayMonth: number = new Date().getMonth();
   @State todayYear: number = new Date().getFullYear();
+  @State themeColor:Color = Color.Blue;
   @Link typeOfDayArray: DayState[]
-  //  @Link selectFrom: Date
-  //  @Link selectBefore: Date
+
 
   // Single Date Picker link & state variables
   @Link selectedDay: number
@@ -200,10 +199,10 @@ struct MaterialDatePickerCalendar{
         ForEach([...Array(this.model.getDaysInMonth(this.currYear,this.currMonth)).keys()],(day:number) => {
           GridItem() {
             if(!this.isRangePicker){
-              calendarDay({date:day,typeOfDay:this.getTypeOfDay(day),onButtonPress:(value) => this.onButtonPress(value)})
+              calendarDay({date:day,typeOfDay:this.getTypeOfDay(day),onButtonPress:(value) => this.onButtonPress(value),themeColor:this.themeColor+0})
             }
             else{
-              calendarDay({date:day,typeOfDay:this.getTypeOfDay(day),onButtonPress:(value) => this.onButtonPress2(value)})
+              calendarDay({date:day,typeOfDay:this.getTypeOfDay(day),onButtonPress:(value) => this.onButtonPress2(value),themeColor:this.themeColor+0})
             }
 
           }
@@ -232,10 +231,6 @@ namespace MaterialDatePickerCalendar{
     getStartDayOfMonth(year: number, month:number) : number{
       var temp = new Date(year,month,1);
       return temp.getDay();
-    }
-    selectable(selectFrom:Date, selectBefore:Date, currDate:Date): boolean{
-      if(selectFrom<=currDate && currDate<=selectBefore) return true;
-      else return false;
     }
 
   }
