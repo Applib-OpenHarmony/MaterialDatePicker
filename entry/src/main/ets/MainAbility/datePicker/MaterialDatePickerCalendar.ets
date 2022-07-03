@@ -10,21 +10,20 @@ enum DayState {
 
 @Component
 struct MaterialDatePickerCalendar{
-  private model:MaterialDatePickerCalendar.Model = new MaterialDatePickerCalendar.Model()
+  private model: MaterialDatePickerCalendar.Model = new MaterialDatePickerCalendar.Model();
 
-  // Common link & state variables
+  // common link & state variables
   @Link isRangePicker: boolean
-  @Link selectFrom: Date
-  @Link selectBefore: Date
-  @Link currMonth: number
-  @Link currYear: number
-  @Link typeOfDayArray: DayState[]
+  @State currMonth: number = new Date().getMonth();
+  @State currYear: number = new Date().getFullYear();
   @State today: number = new Date().getDate();
   @State todayMonth: number = new Date().getMonth();
   @State todayYear: number = new Date().getFullYear();
+  @Link typeOfDayArray: DayState[]
+  //  @Link selectFrom: Date
+  //  @Link selectBefore: Date
 
-
-  // Single-Date Picker link & state variables
+  // Single Date Picker link & state variables
   @Link selectedDay: number
   @Link selectedMonth: number
   @Link selectedYear: number
@@ -41,12 +40,12 @@ struct MaterialDatePickerCalendar{
   @Link isStartSelected:boolean
   @Link isEndSelected:boolean
 
-  // Common methods
+  // common methods
   getTypeOfDay(value:number): DayState{
     return this.typeOfDayArray[value];
   }
 
-  // Single-Date Picker methods
+  // Single Date Picker methods
   onButtonPress(value:number){
     if(this.isSelected){
       if(this.selectedDay==this.today && this.selectedMonth==this.todayMonth && this.selectedYear==this.todayYear){
@@ -69,19 +68,21 @@ struct MaterialDatePickerCalendar{
     }
   }
 
-  // Range-Picker methods
+  // Range Picker methods
   isInBetween(currDate: Date):boolean{
     var startDate: Date = new Date(this.startYear,this.startMonth,this.startDay)
     var endDate: Date = new Date(this.endYear,this.endMonth,this.endDay)
     if(startDate<currDate && currDate<endDate) return true;
     else return false;
   }
+
   isAhead(currDate:Date):boolean{
     var startDate: Date = new Date(this.startYear,this.startMonth,this.startDay)
     if(currDate>=startDate) return true;
     else return false;
   }
-  onRangeButtonPress(value:number){
+
+  onButtonPress2(value:number){
     if (this.isStartSelected && this.isEndSelected) {
       if(this.startMonth==this.currMonth && this.startYear==this.currYear){
         for(var i=this.startDay;i<this.endDay-1;i++){
@@ -198,13 +199,11 @@ struct MaterialDatePickerCalendar{
         // Month grid
         ForEach([...Array(this.model.getDaysInMonth(this.currYear,this.currMonth)).keys()],(day:number) => {
           GridItem() {
-            // Single-Date Picker
             if(!this.isRangePicker){
               calendarDay({date:day,typeOfDay:this.getTypeOfDay(day),onButtonPress:(value) => this.onButtonPress(value)})
             }
-            // Range-Picker
             else{
-              calendarDay({date:day,typeOfDay:this.getTypeOfDay(day),onButtonPress:(value) => this.onRangeButtonPress(value)})
+              calendarDay({date:day,typeOfDay:this.getTypeOfDay(day),onButtonPress:(value) => this.onButtonPress2(value)})
             }
 
           }
@@ -217,6 +216,7 @@ struct MaterialDatePickerCalendar{
       .margin({left:15,right:15})
 
     }
+
   }
 }
 
@@ -224,6 +224,7 @@ namespace MaterialDatePickerCalendar{
   export class Model{
     weekdays:string[] = ['S','M','T','W','T','F','S'];
 
+    // common methods
     getDaysInMonth(year: number, month:number) : number{
       var dt:Date = new Date(year,month+1,1);
       return new Date(dt.getFullYear(),dt.getMonth(),0).getDate();
