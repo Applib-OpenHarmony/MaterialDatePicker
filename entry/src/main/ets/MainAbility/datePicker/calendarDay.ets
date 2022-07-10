@@ -22,7 +22,7 @@ struct calendarDay {
       return this.themeColor
     }
     else if(this.typeOfDay==3){
-      return Color.Grey
+      return 0xdeccff;
     }
     else{
       return Color.White;
@@ -41,6 +41,11 @@ struct calendarDay {
   getBorderWidth() : number{
     if(this.typeOfDay==1) return 1;
     else return 0;
+  }
+
+  getOpacity() : number{
+    if(this.typeOfDay==3) return 0.2
+    else return 1
   }
 
   build() {
