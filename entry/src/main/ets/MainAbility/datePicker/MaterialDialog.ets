@@ -28,7 +28,16 @@ struct MaterialDialog{
 
   build(){
     Column(){
-      MaterialDatePicker({isRangePicker:this.isRangePicker && true, openComponent:()=>this.openDialog(),closeComponent:()=>this.closeDialog(),sendDate:(value)=>this.update(value),yearStartRange:this.yearStartRange+0,yearEndRange:this.yearEndRange+0,currYear:this.currYear+0,currMonth:this.currMonth+0,themeColor:this.themeColor+0})
+      MaterialDatePicker({
+        isRangePicker:this.isRangePicker && true,
+        openComponent:()=>this.openDialog(),
+        closeComponent:()=>this.closeDialog(),
+        sendDate:(value)=>this.update(value),
+        yearStartRange:this.yearStartRange+0,
+        yearEndRange:this.yearEndRange+0,
+        currYear:this.currYear+0,
+        currMonth:this.currMonth+0,
+        themeColor:this.themeColor+0})
     }
   }
 }
