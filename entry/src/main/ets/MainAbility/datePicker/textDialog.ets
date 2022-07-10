@@ -131,11 +131,9 @@ struct textDialog{
                       primaryButton: {
                         value: 'OK',
                         action: () => {
-                          //                    console.info('Callback when the first button is clicked')
                         }
                       },
                       cancel: () => {
-                        //                  console.info('Closed callbacks')
                       }
                     }
                   )
@@ -193,11 +191,9 @@ struct textDialog{
                   primaryButton: {
                     value: 'OK',
                     action: () => {
-                      //                    console.info('Callback when the first button is clicked')
                     }
                   },
                   cancel: () => {
-                    //                  console.info('Closed callbacks')
                   }
                 }
               )
@@ -216,11 +212,9 @@ struct textDialog{
                   primaryButton: {
                     value: 'OK',
                     action: () => {
-                      //                    console.info('Callback when the first button is clicked')
                     }
                   },
                   cancel: () => {
-                    //                  console.info('Closed callbacks')
                   }
                 }
               )
