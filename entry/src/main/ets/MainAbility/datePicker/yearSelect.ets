@@ -5,6 +5,7 @@ struct yearSelect{
   @Link yearStartRange:number
   @Link yearEndRange:number
   @Link selectedYear:number
+  @Link showYearList: boolean
   @State themeColor: Color = Color.Blue
 
 
@@ -18,11 +19,11 @@ struct yearSelect{
                 Text(year+'').fontSize(16).fontColor(Color.White).fontWeight(FontWeight.Regular);
               }
               .width(80)
-              .height(20)
+              .height(30)
               .backgroundColor(this.themeColor)
-              .borderRadius(5)
+              .borderRadius(30)
               .onClick((event:ClickEvent)=>{
-
+                this.showYearList=false;
               })
             }
             else{
@@ -30,10 +31,11 @@ struct yearSelect{
                 Text(year+'').fontSize(16).fontColor(Color.Black).fontWeight(FontWeight.Regular);
               }
               .width(80)
-              .height(20)
+              .height(30)
               .backgroundColor(Color.White)
               .onClick((event:ClickEvent)=>{
                   this.selectedYear=year;
+                  this.showYearList=false;
               })
             }
 
