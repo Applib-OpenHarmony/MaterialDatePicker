@@ -14,7 +14,6 @@ struct testScreen{
     alignment: DialogAlignment.Bottom,
   });
   onAccept (value:string) {
-    console.log("onAccept="+value);
     if(!this.isRangePicker){
       this.showSelectedDate=value;
     }
@@ -23,7 +22,6 @@ struct testScreen{
     }
   }
   exitApp () {
-    console.log("Cancel dialog!");
   }
 
   build(){
@@ -50,7 +48,7 @@ struct testScreen{
         Column(){
           Row(){
             Button({type:ButtonType.Circle}){
-              Image($r("app.media.calendar")).width(20).height(20)
+              Image($r("app.media.range_calendar")).width(20).height(20)
             }.width(20).height(20).backgroundColor(Color.White)
             .onClick(() => {
               this.isRangePicker = false;
