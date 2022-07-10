@@ -1,13 +1,7 @@
 import MaterialDatePickerCalendar from './MaterialDatePickerCalendar'
 import yearSelect from './yearSelect'
 import textDialog from './textDialog'
-
-enum DayState {
-  NORMAL_DAY,
-  TODAY_DAY,
-  SELECTED_DAY,
-  IN_RANGE_DAY
-}
+import {DayState} from './enums'
 
 @Component
 struct MaterialDatePicker{
@@ -17,6 +11,7 @@ struct MaterialDatePicker{
 
   // common link & state variables
   @State isRangePicker: boolean = false;
+  @State clicked: boolean = false;
   @State currYear:number = new Date().getFullYear();
   @State currMonth:number = new Date().getMonth();
   @State showYearList: boolean = false;
@@ -25,7 +20,6 @@ struct MaterialDatePicker{
   @State themeColor: Color = 0x5e00ff
   weekdays:string[] = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']
   months:string[] = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
-  @State typeOfDayArray: DayState[]=new Array();
 
   // Single Date Picker link & state variables
   @State selectedDay: number = new Date().getDate();
@@ -43,58 +37,17 @@ struct MaterialDatePicker{
   @State endYear: number = new Date().getFullYear();
   @State isStartSelected:boolean = false;
   @State isEndSelected:boolean = false;
+  @State cellHeight: number = 0
+  @State cellWidth: number = 0
+  @State gridWidth: number = 0
+  @State gridStartX: number = 0
+  @State gridStartY: number = 0
 
   // Single Date Picker methods
-  makeArray(): DayState[]{
-    var arr: DayState[] = new Array(this.model.getDaysInMonth(this.currYear,this.currMonth))
-    for(var i=0;i<arr.length;i++){
-      if(this.isSelected && this.selectedYear==this.currYear && this.selectedMonth==this.currMonth && i+1==this.selectedDay){
-        arr[i]=DayState.SELECTED_DAY;
-      }
-      else if(this.currYear==new Date().getFullYear() && this.currMonth==new Date().getMonth() && i+1==new Date().getDate()){
-        arr[i]=DayState.TODAY_DAY;
-      }
-      else{
-        arr[i]=DayState.NORMAL_DAY;
-      }
-    }
-    return arr;
-  }
 
   // Range Picker methods
-  isInBetween(currDate: Date):boolean{
-    var startDate: Date = new Date(this.startYear,this.startMonth,this.startDay)
-    var endDate: Date = new Date(this.endYear,this.endMonth,this.endDay)
-    if(startDate<currDate && currDate<endDate) return true;
-    else return false;
-  }
-  makeArray2(): DayState[]{
-    var arr: DayState[] = new Array(this.model.getDaysInMonth(this.currYear,this.currMonth))
-    for(var i=0;i<arr.length;i++){
-      if(this.isStartSelected && this.startYear==this.currYear && this.startMonth==this.currMonth && i+1==this.startDay){
-        arr[i]=DayState.SELECTED_DAY;
-      }
-      else if(this.isEndSelected && this.endYear==this.currYear && this.endMonth==this.currMonth && i+1==this.endDay){
-        arr[i]=DayState.SELECTED_DAY;
-      }
-      else if(this.isStartSelected && this.isEndSelected && this.isInBetween(new Date(this.currYear,this.currMonth,i+1))){
-        arr[i]=DayState.IN_RANGE_DAY;
-      }
-      else if(this.currYear==new Date().getFullYear() && this.currMonth==new Date().getMonth() && i+1==new Date().getDate()){
-        arr[i]=DayState.TODAY_DAY;
-      }
-      else{
-        arr[i]=DayState.NORMAL_DAY;
-      }
-    }
-    return arr;
-  }
 
   // common methods
-  aboutToAppear(){
-    this.typeOfDayArray=(!this.isRangePicker)?this.makeArray():this.makeArray2();
-  }
-
   getSelectedText(): string{
     if(!this.isRangePicker){
       if(this.isSelected){
@@ -196,17 +149,11 @@ struct MaterialDatePicker{
 
             // Button to open year-select grid
             Button({type:ButtonType.Circle}){
-              Image('app.media.arrow_back').width(20).height(20)
-            }.width(20).height(20).margin({left:5}).backgroundColor(this.themeColor)
+              Image($r("app.media.arrow_drop_down")).width(20).height(20)
+            }.width(20).height(20).margin({left:10,right:15}).backgroundColor(Color.White)
             .onClick((event:ClickEvent)=>{
               if(this.showYearList){
                 this.showYearList=false;
-                if(!this.isRangePicker){
-                  this.typeOfDayArray=this.makeArray();
-                }
-                else {
-                  this.typeOfDayArray=this.makeArray2();
-                }
               }
               else this.showYearList=true;
             })
@@ -224,12 +171,6 @@ struct MaterialDatePicker{
                 this.currMonth=11
                 this.currYear-=1
               }
-              if(!this.isRangePicker){
-                this.typeOfDayArray=this.makeArray();
-              }
-              else {
-                this.typeOfDayArray=this.makeArray2();
-              }
             })
 
             // Navigate to next month button
@@ -242,12 +183,6 @@ struct MaterialDatePicker{
                 this.currMonth=0
                 this.currYear+=1
               }
-              if(!this.isRangePicker){
-                this.typeOfDayArray=this.makeArray();
-              }
-              else {
-                this.typeOfDayArray=this.makeArray2();
-              }
             })
           }
           .justifyContent(FlexAlign.End)
@@ -258,41 +193,76 @@ struct MaterialDatePicker{
 
       Row(){
         // Year Grid
-        if(this.showYearList) yearSelect({yearModel:this.yearModel,selectedYear:$currYear,yearStartRange:$yearStartRange,yearEndRange:$yearEndRange,themeColor:this.themeColor+0});
+        if(this.showYearList) {
+          yearSelect({
+          yearModel:this.yearModel,
+          selectedYear:$currYear,
+          yearStartRange:$yearStartRange,
+          yearEndRange:$yearEndRange,
+          showYearList:$showYearList,
+          themeColor:this.themeColor+0
+          })
+        }
 
         // Month Calendar
-        if(!this.showYearList) MaterialDatePickerCalendar({model:this.model,isRangePicker:$isRangePicker,currMonth:this.currMonth+0,currYear:this.currYear+0,selectedYear:$selectedYear,selectedMonth:$selectedMonth,selectedDay:$selectedDay,selectedDateString:$showSelected,isSelected:$isSelected,typeOfDayArray:$typeOfDayArray,startDay:$startDay,startMonth:$startMonth,startYear:$startYear,endDay:$endDay,endMonth:$endMonth,endYear:$endYear,isStartSelected:$isStartSelected,isEndSelected:$isEndSelected,themeColor:this.themeColor+0})
-//        if(!this.showYearList){
-//          Swiper(this.swiperController){
-//            ForEach([...new Array(12).keys()], (month:number)=>{
-//              MaterialDatePickerCalendar({model:this.model,isRangePicker:$isRangePicker,currMonth:month,currYear:this.currYear+0,selectedYear:$selectedYear,selectedMonth:$selectedMonth,selectedDay:$selectedDay,selectedDateString:$showSelected,isSelected:$isSelected,typeOfDayArray:$typeOfDayArray,startDay:$startDay,startMonth:$startMonth,startYear:$startYear,endDay:$endDay,endMonth:$endMonth,endYear:$endYear,isStartSelected:$isStartSelected,isEndSelected:$isEndSelected,themeColor:this.themeColor+0})
-//            })
-//          }
-//          .index(this.currMonth)
-//          .autoPlay(false)
-//          .indicator( false ) // enable indicator by default
-//          .loop( true ) // enable loop playback by default
-//          .duration(1000)
-//          .vertical( false ) // default horizontal switch
-//          .itemSpace(0)
-//          .onChange((index: number) => {
-//            if(this.prevIdx==11 && index==0) {
-//              this.currYear++;
-//              this.currMonth=0;
-//            }
-//            if(this.prevIdx==0 && index==11) {
-//              this.currYear--;
-//              this.currMonth=11;
-//            }
-//            else{
-//              this.currMonth=index;
-//            }
-//            this.typeOfDayArray=this.makeArray();
-//            console.log("prevIdx: "+this.prevIdx+", "+"current index: "+index);
-//            this.prevIdx = index;
-//          })
-//        }
-
+        // if(!this.showYearList) MaterialDatePickerCalendar({model:this.model,isRangePicker:$isRangePicker,currMonth:this.currMonth+0,currYear:this.currYear+0,selectedYear:$selectedYear,selectedMonth:$selectedMonth,selectedDay:$selectedDay,selectedDateString:$showSelected,isSelected:$isSelected,startDay:$startDay,startMonth:$startMonth,startYear:$startYear,endDay:$endDay,endMonth:$endMonth,endYear:$endYear,isStartSelected:$isStartSelected,isEndSelected:$isEndSelected,themeColor:this.themeColor+0})
+        if(!this.showYearList) {
+          Swiper(this.swiperController) {
+            ForEach([...new Array(12).keys()], (month: number) => {
+              if ((month - this.currMonth) >= -1 && (month - this.currMonth) <= 1) {
+                MaterialDatePickerCalendar({
+                  model: this.model,
+                  isRangePicker: $isRangePicker,
+                  clicked: $clicked,
+                  currMonth: month,
+                  currYear: this.currYear + 0,
+                  selectedYear: $selectedYear,
+                  selectedMonth: $selectedMonth,
+                  selectedDay: $selectedDay,
+                  selectedDateString: $showSelected,
+                  isSelected: $isSelected,
+                  startDay: $startDay,
+                  startMonth: $startMonth,
+                  startYear: $startYear,
+                  endDay: $endDay,
+                  endMonth: $endMonth,
+                  endYear: $endYear,
+                  isStartSelected: $isStartSelected,
+                  isEndSelected: $isEndSelected,
+                  themeColor: this.themeColor + 0,
+                  gridWidth: $gridWidth,
+                  gridStartX: $gridStartX,
+                  gridStartY: $gridStartY,
+                  cellWidth: $cellWidth,
+                  cellHeight: $cellHeight
+                })
+              } else {
+                PlaceHolderComponent()
+              }
+            })
+          }
+          .index(this.currMonth)
+          .autoPlay(false)
+          .indicator(false) // enable indicator by default
+          .loop(true) // enable loop playback by default
+          .duration(1000)
+          .vertical(false) // default horizontal switch
+          .itemSpace(0)
+          .onChange((index: number) => {
+            if (this.prevIdx == 11 && index == 0) {
+              this.currYear++;
+              this.currMonth = 0;
+            }
+            if (this.prevIdx == 0 && index == 11) {
+              this.currYear--;
+              this.currMonth = 11;
+            }
+            else {
+              this.currMonth = index;
+            }
+            this.prevIdx = index;
+          })
+        }
       }.width('100%').height(300).margin({bottom:20})
 
       Flex({justifyContent:FlexAlign.SpaceBetween}){
@@ -302,12 +272,6 @@ struct MaterialDatePicker{
             Button("Today",{type:ButtonType.Normal}).width(100).backgroundColor(Color.White).fontColor(Color.Black).onClick((event:ClickEvent)=>{
               this.currMonth=new Date().getMonth();
               this.currYear=new Date().getFullYear();
-              if(!this.isRangePicker){
-                this.typeOfDayArray=this.makeArray();
-              }
-              else {
-                this.typeOfDayArray=this.makeArray2();
-              }
             }).padding(10)
           }
         }
@@ -342,5 +306,12 @@ struct MaterialDatePicker{
   }
 }
 
+@Component
+struct PlaceHolderComponent {
+  build() {
+    Column() {
+    }
+  }
+}
 
 export default MaterialDatePicker;
