@@ -30,22 +30,17 @@ struct testScreen {
         inputMode: CalendarType.SELECT_DATE,
         startYear: 2000,
         endYear: 2030,
-        openAtYear: 2001,
-        openAtMonth: 10,
+        openAtYear: 2022,
+        openAtMonth: 6,
         themeColor: 0x5e00ff,
         titleStyle: {
-          textLabel: "Select DOB",
+          textLabel: "Select date",
           textColor: Color.White
         },
         selectedDateStyle: {
           textColor: Color.White
         },
         monthStyle: {
-          textColor: Color.Black,
-          //          todayDateTextColor:Color.Black,
-          //          todayDateBorderWidth:1,
-          //          todayDateBorderColor:Color.Black,
-          //          todayDateFillColor:Color.White,
           itemFillColor: 0x5e00ff
         },
         cancelButtonStyle: {
@@ -68,29 +63,24 @@ struct testScreen {
 
   rangePicker: CustomDialogController = new CustomDialogController({
     builder: MaterialDatePicker({
-      confirm: (value) => this.onAccept2(value),
+      confirm: (value) => this.onAcceptRange(value),
       cancel: this.exitApp,
       options: {
         picker: pickerType.DATE_RANGE_PICKER,
         inputMode: CalendarType.ENTER_DATE,
         startYear: 2000,
         endYear: 2030,
-        openAtYear: 2001,
-        openAtMonth: 10,
+        openAtYear: 2022,
+        openAtMonth: 6,
         themeColor: 0x5e00ff,
         titleStyle: {
-          textLabel: "Select vacation period",
+          textLabel: "Select range",
           textColor: Color.White
         },
         selectedDateStyle: {
           textColor: Color.White
         },
         monthStyle: {
-          textColor: Color.Black,
-          todayDateTextColor: Color.Black,
-          todayDateBorderWidth: 1,
-          todayDateBorderColor: Color.Black,
-          todayDateFillColor: Color.White,
           itemFillColor: 0x5e00ff,
           rangeFillColor: 0xece0fd
         },
@@ -108,7 +98,7 @@ struct testScreen {
     alignment: DialogAlignment.Center,
   });
 
-  onAccept2(value: string) {
+  onAcceptRange(value: string) {
     this.showSelectedRange = value;
   }
 
