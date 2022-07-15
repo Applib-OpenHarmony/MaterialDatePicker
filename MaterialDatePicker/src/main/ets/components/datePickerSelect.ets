@@ -160,7 +160,7 @@ struct datePickerSelect {
             this.parentModel.prevIdx = index;
           })
         }
-      }.width('100%').height(350).alignItems(ItemAlign.Start)
+      }.width('100%').height(350).alignItems(VerticalAlign.Top)
 
       Flex({ justifyContent: FlexAlign.SpaceBetween }) {
         Column() {
