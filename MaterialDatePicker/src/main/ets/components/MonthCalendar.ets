@@ -1,27 +1,42 @@
+/*
+ * Copyright (C) 2022 Application Library Engineering Group
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import calendarDay from './calendarDay'
-import {DayState,pickerType} from './values'
-import {DatePickerModel} from './DatePickerModel'
+import { DayState } from './values'
+import { DatePickerModel } from './DatePickerModel'
 
 @Component
-struct MonthCalendar{
-
+struct MonthCalendar {
   @Link @Watch("isChanged") parentModel: DatePickerModel
   @State @Watch("isChanged") currMonth: number = new Date().getMonth();
   @State @Watch("isChanged") currYear: number = new Date().getFullYear();
-  @State model : MonthCalendarModel = undefined
+  @State model: MonthCalendarModel = undefined
 
-
-  aboutToAppear(){
-    this.model = new MonthCalendarModel(this.parentModel,this.currMonth,this.currYear);
+  aboutToAppear() {
+    this.model = new MonthCalendarModel(this.parentModel, this.currMonth, this.currYear);
   }
-  isChanged(){
+
+  isChanged() {
     this.model.makeTypeOfDayArray();
-    if(this.parentModel.picker == 1) this.model.drawRangeValues();
+    if (this.parentModel.picker == 1) this.model.drawRangeValues();
   }
 
-  build(){
-    Stack(){
-      if (this.model.drawRange.length>0) {
+  build() {
+    Stack() {
+      if (this.model.drawRange.length > 0) {
         ForEach(this.model.drawRange, (rectShape, index) => {
           Shape() {
             Rect().width(rectShape.width).height(this.parentModel.cellHeight)
@@ -36,29 +51,36 @@ struct MonthCalendar{
           ForEach(this.parentModel.weekdays, (days: string) => {
             GridItem() {
               Column() {
-                Text(days).fontSize(18).fontWeight(FontWeight.Bold).fontColor(Color.Gray);
+                Text(days).fontSize(18).fontWeight(FontWeight.Bold).fontColor(Color.Grey);
               }
             }
+            .width(40)
+            .height(40)
           })
         }
         .columnsTemplate('1fr 1fr 1fr 1fr 1fr 1fr 1fr')
-        .height(30)
+        .height(40)
         .width('100%')
+        .margin({ left: 12, right: 12})
 
-        Grid(){
-          ForEach(new Array(this.model.getStartDayOfMonth(this.currYear,this.currMonth)), (temp: number) => {
+        Grid() {
+          ForEach(new Array(this.model.getStartDayOfMonth(this.currYear, this.currMonth)), (temp: number) => {
             GridItem() {
             }
+            .width(40)
+            .height(40)
           })
-          ForEach([...Array(this.model.getDaysInMonth(this.currYear,this.currMonth)).keys()],(day:number) => {
+          ForEach([...Array(this.model.getDaysInMonth(this.currYear, this.currMonth)).keys()], (day: number) => {
             GridItem() {
               calendarDay({
-                  parentModel: $parentModel,
-                  date:day,
-                  typeOfDay:this.model.getTypeOfDay(day),
-                  onButtonPress:(selected_date) => this.model.onButtonPress(selected_date)
+                parentModel: $parentModel,
+                date: day,
+                typeOfDay: this.model.getTypeOfDay(day),
+                onButtonPress: (selected_date) => this.model.onButtonPress(selected_date)
               })
             }
+            .width(40)
+            .height(40)
             .onAreaChange((oldArea, newArea) => {
               if (this.parentModel.cellWidth == 0) {
                 if (typeof newArea.width == 'number')
@@ -70,10 +92,9 @@ struct MonthCalendar{
           })
         }
         .columnsTemplate('1fr 1fr 1fr 1fr 1fr 1fr 1fr')
-        .rowsGap(10)
-        .height(300)
+        .rowsGap(4)
         .width('100%')
-        .margin({bottom: 35})
+        .margin({ left: 12, right: 12, bottom: 35 })
         .onAreaChange((oldArea, newArea) => {
           if (this.parentModel.gridWidth == 0) {
             if (typeof newArea.width == 'number')
@@ -92,79 +113,83 @@ struct MonthCalendar{
 class MonthCalendarModel {
   currMonth: number
   currYear: number
-  typeOfDayArray: DayState[]=[]
+  typeOfDayArray: DayState[]= []
   drawRange: {
     x: number,
     y: number,
     width: number
   }[] = []
   parentModel: DatePickerModel
+
   constructor(pModel: DatePickerModel, month: number, year: number) {
     this.parentModel = pModel
     this.currMonth = month
     this.currYear = year
     this.makeTypeOfDayArray();
-    if(this.parentModel.picker == 1) this.drawRangeValues();
+    if (this.parentModel.picker == 1) this.drawRangeValues();
   }
 
-  makeTypeOfDayArray(){
-    this.typeOfDayArray=[]
-    let n: number = this.getDaysInMonth(this.currYear,this.currMonth)
-    if(this.parentModel.picker == 0){
-      for(var i=0;i<n;i++){
-        if(this.parentModel.isSelected && this.parentModel.selectedYear==this.currYear && this.parentModel.selectedMonth==this.currMonth && i+1==this.parentModel.selectedDay){
+  makeTypeOfDayArray() {
+    this.typeOfDayArray = []
+    let n: number = this.getDaysInMonth(this.currYear, this.currMonth)
+    if (this.parentModel.picker == 0) {
+      for (var i = 0;i < n; i++) {
+        if (this.parentModel.isSelected && this.parentModel.selectedYear == this.currYear && this.parentModel.selectedMonth == this.currMonth && i + 1 == this.parentModel.selectedDay) {
           this.typeOfDayArray.push(DayState.SELECTED_DAY);
         }
-        else if(this.currYear==this.parentModel.todayYear && this.currMonth==this.parentModel.todayMonth && i+1==this.parentModel.todayDate){
+        else if (this.currYear == this.parentModel.todayYear && this.currMonth == this.parentModel.todayMonth && i + 1 == this.parentModel.todayDate) {
           this.typeOfDayArray.push(DayState.TODAY_DAY);
         }
-        else{
+        else {
           this.typeOfDayArray.push(DayState.NORMAL_DAY);
         }
       }
     }
-    else{
-      for(var i=0;i<n;i++){
-        if(this.parentModel.isStartSelected && this.parentModel.rangeStartYear==this.currYear && this.parentModel.rangeStartMonth==this.currMonth && i+1==this.parentModel.rangeStartDay){
+    else {
+      for (var i = 0;i < n; i++) {
+        if (this.parentModel.isStartSelected && this.parentModel.rangeStartYear == this.currYear && this.parentModel.rangeStartMonth == this.currMonth && i + 1 == this.parentModel.rangeStartDay) {
           this.typeOfDayArray.push(DayState.SELECTED_DAY);
         }
-        else if(this.parentModel.isEndSelected && this.parentModel.rangeEndYear==this.currYear && this.parentModel.rangeEndMonth==this.currMonth && i+1==this.parentModel.rangeEndDay){
+        else if (this.parentModel.isEndSelected && this.parentModel.rangeEndYear == this.currYear && this.parentModel.rangeEndMonth == this.currMonth && i + 1 == this.parentModel.rangeEndDay) {
           this.typeOfDayArray.push(DayState.SELECTED_DAY);
         }
-        else if(this.parentModel.isStartSelected && this.parentModel.isEndSelected && this.isInBetween(new Date(this.currYear,this.currMonth,i+1))){
+        else if (this.parentModel.isStartSelected && this.parentModel.isEndSelected && this.isInBetween(new Date(this.currYear, this.currMonth, i + 1))) {
           this.typeOfDayArray.push(DayState.IN_RANGE_DAY);
         }
-        else if(this.currYear==this.parentModel.todayYear && this.currMonth==this.parentModel.todayMonth && i+1==this.parentModel.todayDate){
+        else if (this.currYear == this.parentModel.todayYear && this.currMonth == this.parentModel.todayMonth && i + 1 == this.parentModel.todayDate) {
           this.typeOfDayArray.push(DayState.TODAY_DAY);
         }
-        else{
+        else {
           this.typeOfDayArray.push(DayState.NORMAL_DAY);
         }
       }
     }
   }
 
-  getDaysInMonth(year: number, month:number) : number{
-    var dt:Date = new Date(year,month+1,1);
-    return new Date(dt.getFullYear(),dt.getMonth(),0).getDate();
+  getDaysInMonth(year: number, month: number): number{
+    var dt: Date = new Date(year, month + 1, 1);
+    return new Date(dt.getFullYear(), dt.getMonth(), 0).getDate();
   }
-  getStartDayOfMonth(year: number, month:number) : number{
-    var temp = new Date(year,month,1);
+
+  getStartDayOfMonth(year: number, month: number): number{
+    var temp = new Date(year, month, 1);
     return temp.getDay();
   }
-  getTypeOfDay(day:number): DayState{
+
+  getTypeOfDay(day: number): DayState{
     return this.typeOfDayArray[day];
   }
-  isInBetween(currDate: Date):boolean{
-    var startDate: Date = new Date(this.parentModel.rangeStartYear,this.parentModel.rangeStartMonth,this.parentModel.rangeStartDay)
-    var endDate: Date = new Date(this.parentModel.rangeEndYear,this.parentModel.rangeEndMonth,this.parentModel.rangeEndDay)
-    if(startDate<currDate && currDate<endDate) return true;
+
+  isInBetween(currDate: Date): boolean{
+    var startDate: Date = new Date(this.parentModel.rangeStartYear, this.parentModel.rangeStartMonth, this.parentModel.rangeStartDay)
+    var endDate: Date = new Date(this.parentModel.rangeEndYear, this.parentModel.rangeEndMonth, this.parentModel.rangeEndDay)
+    if (startDate < currDate && currDate < endDate) return true;
     else return false;
   }
 
-  isAhead(currDate:Date):boolean{
-    var startDate: Date = new Date(this.parentModel.rangeStartYear,this.parentModel.rangeStartMonth,this.parentModel.rangeStartDay)
-    if(currDate>=startDate) return true;
+  isAhead(currDate: Date): boolean{
+    var startDate: Date = new Date(this.parentModel.rangeStartYear, this.parentModel.rangeStartMonth, this.parentModel.rangeStartDay)
+    if (currDate >= startDate) return true;
     else return false;
   }
 
@@ -177,7 +202,7 @@ class MonthCalendarModel {
     let endRangeIndex = -1
     let i = 0
     this.drawRange = []
-    if(!this.parentModel.isStartSelected || !this.parentModel.isEndSelected) return
+    if (!this.parentModel.isStartSelected || !this.parentModel.isEndSelected) return
     let monthOffset = this.getStartDayOfMonth(this.currYear, this.currMonth)
     for (i; i < this.typeOfDayArray.length; i++) {
       if (this.typeOfDayArray[i] == DayState.IN_RANGE_DAY) {
@@ -185,15 +210,15 @@ class MonthCalendarModel {
           startRangeIndex = i;
         }
         else {
-          endRangeIndex = i ;
+          endRangeIndex = i;
         }
       }
       else if (endRangeIndex != -1) {
         break
       }
     }
-    if(startRangeIndex==-1) return
-    if(startRangeIndex!=-1 && endRangeIndex==-1) endRangeIndex=startRangeIndex
+    if (startRangeIndex == -1) return
+    if (startRangeIndex != -1 && endRangeIndex == -1) endRangeIndex = startRangeIndex
     if (startRangeIndex != -1) {
       minRowSelected = Math.floor((monthOffset + startRangeIndex) / 7)
       minCellSelected = (monthOffset + startRangeIndex) % 7
@@ -203,114 +228,116 @@ class MonthCalendarModel {
       maxCellSelected = (monthOffset + endRangeIndex) % 7
     }
 
-    let marginBetweenRow = 10
-    let columnGap = (this.parentModel.gridWidth - 2*this.parentModel.gridStartX - 7*this.parentModel.cellWidth)/6
+    let marginBetweenRow = 4
+    let columnGap = (this.parentModel.gridWidth - 2 * this.parentModel.gridStartX - 7 * this.parentModel.cellWidth) / 6
     for (i = minRowSelected; i < maxRowSelected + 1; i++) {
       let x;
       let y;
       let width;
       if (minRowSelected == maxRowSelected) {
-        if(minCellSelected == 0 || maxCellSelected == 6){
-          x = this.parentModel.gridStartX/2
-          width = 7*this.parentModel.cellWidth + 6*columnGap + this.parentModel.gridStartX
+        if (minCellSelected == 0 || maxCellSelected == 6) {
+          x = this.parentModel.gridStartX / 2
+          width = 7 * this.parentModel.cellWidth + 6 * columnGap + this.parentModel.gridStartX
         }
-        else{
-          x = (minCellSelected-1)*(this.parentModel.cellWidth+columnGap) + this.parentModel.cellWidth/2 + this.parentModel.gridStartX
-          width = ( maxCellSelected - minCellSelected + 2)*(this.parentModel.cellWidth + columnGap)
+        else {
+          x = (minCellSelected - 1) * (this.parentModel.cellWidth + columnGap) + this.parentModel.cellWidth / 2 + this.parentModel.gridStartX
+          width = (maxCellSelected - minCellSelected + 2) * (this.parentModel.cellWidth + columnGap)
         }
       }
       else {
         if (i == minRowSelected) {
-          if(minCellSelected==0){
-            x = this.parentModel.gridStartX/2
-            width = 7*this.parentModel.cellWidth + 6*columnGap + this.parentModel.gridStartX
+          if (minCellSelected == 0) {
+            x = this.parentModel.gridStartX / 2
+            width = 7 * this.parentModel.cellWidth + 6 * columnGap + this.parentModel.gridStartX
           }
-          else{
-            x = (minCellSelected-1)*(this.parentModel.cellWidth+columnGap) + this.parentModel.cellWidth/2 + this.parentModel.gridStartX
-            width = (7 - minCellSelected)*(this.parentModel.cellWidth+columnGap) + this.parentModel.cellWidth/2 + this.parentModel.gridStartX/2
+          else {
+            x = (minCellSelected - 1) * (this.parentModel.cellWidth + columnGap) + this.parentModel.cellWidth / 2 + this.parentModel.gridStartX
+            width = (7 - minCellSelected) * (this.parentModel.cellWidth + columnGap) + this.parentModel.cellWidth / 2 + this.parentModel.gridStartX / 2
           }
         }
         else if (i == maxRowSelected) {
-          if(maxCellSelected==6){
-            x = this.parentModel.gridStartX/2
-            width = 7*this.parentModel.cellWidth + 6*columnGap + this.parentModel.gridStartX
+          if (maxCellSelected == 6) {
+            x = this.parentModel.gridStartX / 2
+            width = 7 * this.parentModel.cellWidth + 6 * columnGap + this.parentModel.gridStartX
           }
-          else{
-            x = this.parentModel.gridStartX/2
-            width = (maxCellSelected+1)*(this.parentModel.cellWidth + columnGap) + this.parentModel.cellWidth/2 + this.parentModel.gridStartX/2
+          else {
+            x = this.parentModel.gridStartX / 2
+            width = (maxCellSelected + 1) * (this.parentModel.cellWidth + columnGap) + this.parentModel.cellWidth / 2 + this.parentModel.gridStartX / 2
           }
         }
         else {
-          x = this.parentModel.gridStartX/2
-          width = 7*this.parentModel.cellWidth + (6*columnGap) + this.parentModel.gridStartX
+          x = this.parentModel.gridStartX / 2
+          width = 7 * this.parentModel.cellWidth + (6 * columnGap) + this.parentModel.gridStartX
         }
       }
 
-      if(i==0){
-        y=(i+1)*this.parentModel.cellHeight;
+      if (i == 0) {
+        y = (i + 1) * (this.parentModel.cellHeight);
       }
-      else{
-        y=(i+1)*(this.parentModel.cellHeight) + i*marginBetweenRow
+      else {
+        y = (i + 1) * (this.parentModel.cellHeight) + i * marginBetweenRow
       }
 
       this.drawRange.push({ x, y, width })
     }
   }
 
-  onButtonPress(selected_date:number){
-    if(this.parentModel.picker==0){
-      if(this.parentModel.isSelected){
-        if(this.parentModel.selectedDay==this.parentModel.todayDate && this.parentModel.selectedMonth==this.parentModel.todayMonth && this.parentModel.selectedYear==this.parentModel.todayYear){
-          this.typeOfDayArray[this.parentModel.selectedDay-1]=DayState.TODAY_DAY
+  onButtonPress(selected_date: number) {
+    if (this.parentModel.picker == 0) {
+      if (this.parentModel.isSelected) {
+        if (this.parentModel.selectedDay == this.parentModel.todayDate && this.parentModel.selectedMonth == this.parentModel.todayMonth && this.parentModel.selectedYear == this.parentModel.todayYear) {
+          this.typeOfDayArray[this.parentModel.selectedDay-1] = DayState.TODAY_DAY
         }
-        else this.typeOfDayArray[this.parentModel.selectedDay-1]=DayState.NORMAL_DAY;
+        else this.typeOfDayArray[this.parentModel.selectedDay-1] = DayState.NORMAL_DAY;
 
         this.parentModel.setSelectedDate(selected_date)
-        this.typeOfDayArray[selected_date]=DayState.SELECTED_DAY
+        this.typeOfDayArray[selected_date] = DayState.SELECTED_DAY
       }
-      else{
+      else {
         this.parentModel.setSelectedDate(selected_date)
-        this.typeOfDayArray[selected_date]=DayState.SELECTED_DAY
+        this.typeOfDayArray[selected_date] = DayState.SELECTED_DAY
       }
     }
-    else{
+    else {
       if (this.parentModel.isStartSelected && this.parentModel.isEndSelected) {
-        if(this.parentModel.rangeStartMonth==this.currMonth && this.parentModel.rangeStartYear==this.currYear){
-          for(var i=this.parentModel.rangeStartDay;i<this.parentModel.rangeEndDay-1;i++){
-            if(this.currYear==this.parentModel.todayYear && this.currMonth==this.parentModel.todayMonth && i+1==this.parentModel.todayDate){
-              this.typeOfDayArray[i]=DayState.TODAY_DAY
+        if (this.parentModel.rangeStartMonth == this.currMonth && this.parentModel.rangeStartYear == this.currYear) {
+          for (var i = this.parentModel.rangeStartDay;i < this.parentModel.rangeEndDay - 1; i++) {
+            if (this.currYear == this.parentModel.todayYear && this.currMonth == this.parentModel.todayMonth && i + 1 == this.parentModel.todayDate) {
+              this.typeOfDayArray[i] = DayState.TODAY_DAY
             }
-            else{
-              this.typeOfDayArray[i]=DayState.NORMAL_DAY
-            }
-          }
-        }
-        else{
-          for(var i=0;i<this.parentModel.rangeEndDay-1;i++){
-            if(this.currYear==this.parentModel.todayYear && this.currMonth==this.parentModel.todayMonth && i+1==this.parentModel.todayDate){
-              this.typeOfDayArray[i]=DayState.TODAY_DAY
-            }
-            else{
-              this.typeOfDayArray[i]=DayState.NORMAL_DAY
+            else {
+              this.typeOfDayArray[i] = DayState.NORMAL_DAY
             }
           }
         }
-        if(this.parentModel.rangeEndYear==this.currYear && this.parentModel.rangeEndMonth==this.currMonth) {
-          if(this.parentModel.rangeEndDay==this.parentModel.todayDate && this.parentModel.rangeEndMonth==this.parentModel.todayMonth && this.parentModel.rangeEndYear==this.parentModel.todayYear){
-            this.typeOfDayArray[this.parentModel.rangeEndDay-1]=DayState.TODAY_DAY
+        else {
+          for (var i = 0;i < this.parentModel.rangeEndDay - 1; i++) {
+            if (this.currYear == this.parentModel.todayYear && this.currMonth == this.parentModel.todayMonth && i + 1 == this.parentModel.todayDate) {
+              this.typeOfDayArray[i] = DayState.TODAY_DAY
+            }
+            else {
+              this.typeOfDayArray[i] = DayState.NORMAL_DAY
+            }
           }
-          else this.typeOfDayArray[this.parentModel.rangeEndDay-1]=DayState.NORMAL_DAY;
         }
-        this.parentModel.rangeEndDay = null; this.parentModel.rangeEndMonth = null; this.parentModel.rangeEndYear = null;
+        if (this.parentModel.rangeEndYear == this.currYear && this.parentModel.rangeEndMonth == this.currMonth) {
+          if (this.parentModel.rangeEndDay == this.parentModel.todayDate && this.parentModel.rangeEndMonth == this.parentModel.todayMonth && this.parentModel.rangeEndYear == this.parentModel.todayYear) {
+            this.typeOfDayArray[this.parentModel.rangeEndDay-1] = DayState.TODAY_DAY
+          }
+          else this.typeOfDayArray[this.parentModel.rangeEndDay-1] = DayState.NORMAL_DAY;
+        }
+        this.parentModel.rangeEndDay = null;
+        this.parentModel.rangeEndMonth = null;
+        this.parentModel.rangeEndYear = null;
         this.parentModel.isEndSelected = false;
-        if(this.parentModel.rangeStartYear==this.currYear && this.parentModel.rangeStartMonth==this.currMonth) {
-          if(this.parentModel.rangeStartDay==this.parentModel.todayDate && this.parentModel.rangeStartMonth==this.parentModel.todayMonth && this.parentModel.rangeStartYear==this.parentModel.todayYear){
-            this.typeOfDayArray[this.parentModel.rangeStartDay-1]=DayState.TODAY_DAY
+        if (this.parentModel.rangeStartYear == this.currYear && this.parentModel.rangeStartMonth == this.currMonth) {
+          if (this.parentModel.rangeStartDay == this.parentModel.todayDate && this.parentModel.rangeStartMonth == this.parentModel.todayMonth && this.parentModel.rangeStartYear == this.parentModel.todayYear) {
+            this.typeOfDayArray[this.parentModel.rangeStartDay-1] = DayState.TODAY_DAY
           }
-          else this.typeOfDayArray[this.parentModel.rangeStartDay-1]=DayState.NORMAL_DAY;
+          else this.typeOfDayArray[this.parentModel.rangeStartDay-1] = DayState.NORMAL_DAY;
         }
         this.parentModel.setRangeStartDay(selected_date);
-        this.typeOfDayArray[this.parentModel.rangeStartDay-1]=DayState.SELECTED_DAY;
+        this.typeOfDayArray[this.parentModel.rangeStartDay-1] = DayState.SELECTED_DAY;
 
         this.drawRangeValues()
       }
@@ -318,28 +345,28 @@ class MonthCalendarModel {
       else if (this.parentModel.isStartSelected && !this.parentModel.isEndSelected) {
         if (this.isAhead(new Date(this.currYear, this.currMonth, selected_date + 1))) {
           this.parentModel.setRangeEndDay(selected_date);
-          this.typeOfDayArray[this.parentModel.rangeEndDay-1]=DayState.SELECTED_DAY;
-          if(this.parentModel.rangeStartMonth==this.currMonth && this.parentModel.rangeStartYear==this.currYear){
-            for(var i=this.parentModel.rangeStartDay;i<this.parentModel.rangeEndDay-1;i++){
-              this.typeOfDayArray[i]=DayState.IN_RANGE_DAY;
+          this.typeOfDayArray[this.parentModel.rangeEndDay-1] = DayState.SELECTED_DAY;
+          if (this.parentModel.rangeStartMonth == this.currMonth && this.parentModel.rangeStartYear == this.currYear) {
+            for (var i = this.parentModel.rangeStartDay;i < this.parentModel.rangeEndDay - 1; i++) {
+              this.typeOfDayArray[i] = DayState.IN_RANGE_DAY;
             }
           }
-          else{
-            for(var i=0;i<this.parentModel.rangeEndDay-1;i++){
-              this.typeOfDayArray[i]=DayState.IN_RANGE_DAY;
+          else {
+            for (var i = 0;i < this.parentModel.rangeEndDay - 1; i++) {
+              this.typeOfDayArray[i] = DayState.IN_RANGE_DAY;
             }
           }
           this.drawRangeValues();
         }
         else {
-          if(this.parentModel.rangeStartYear==this.currYear && this.parentModel.rangeStartMonth==this.currMonth) {
-            if(this.parentModel.rangeStartDay==this.parentModel.todayDate && this.parentModel.rangeStartMonth==this.parentModel.todayMonth && this.parentModel.rangeStartYear==this.parentModel.todayYear){
-              this.typeOfDayArray[this.parentModel.rangeStartDay-1]=DayState.TODAY_DAY
+          if (this.parentModel.rangeStartYear == this.currYear && this.parentModel.rangeStartMonth == this.currMonth) {
+            if (this.parentModel.rangeStartDay == this.parentModel.todayDate && this.parentModel.rangeStartMonth == this.parentModel.todayMonth && this.parentModel.rangeStartYear == this.parentModel.todayYear) {
+              this.typeOfDayArray[this.parentModel.rangeStartDay-1] = DayState.TODAY_DAY
             }
-            else this.typeOfDayArray[this.parentModel.rangeStartDay-1]=DayState.NORMAL_DAY;
+            else this.typeOfDayArray[this.parentModel.rangeStartDay-1] = DayState.NORMAL_DAY;
           }
           this.parentModel.setRangeStartDay(selected_date);
-          this.typeOfDayArray[this.parentModel.rangeStartDay-1]=DayState.SELECTED_DAY;
+          this.typeOfDayArray[this.parentModel.rangeStartDay-1] = DayState.SELECTED_DAY;
 
           this.drawRangeValues();
         }
@@ -347,12 +374,12 @@ class MonthCalendarModel {
       else {
         this.parentModel.setRangeStartDay(selected_date);
         this.parentModel.isEndSelected = false;
-        this.typeOfDayArray[this.parentModel.rangeStartDay-1]=DayState.SELECTED_DAY;
+        this.typeOfDayArray[this.parentModel.rangeStartDay-1] = DayState.SELECTED_DAY;
 
         this.drawRangeValues();
       }
 
-      this.parentModel.clicked=!this.parentModel.clicked;
+      this.parentModel.clicked = !this.parentModel.clicked;
     }
   }
 }
