@@ -166,26 +166,26 @@ You can customize the date picker using these attributes:
 
 | Attribute  | Description  |
 | ------------ | ------------ |
-| picker | |
-| inputMode | |
-| startYear | |
-| endYear | |
-| openAtYear | |
-| openAtMonth | |
-| themeColor | |
-| titleStyle: textLabel | |
-| titleStyle: textColor | |   
-| selectedDateStyle: textColor | |
-| monthStyle: textColor | |
-| monthStyle: todayDateTextColor | |
-| monthStyle: todayDateBorderWidth | |
-| monthStyle: todayDateBorderColor | |
-| monthStyle: todayDateFillColor | |
-| monthStyle: itemFillColor | |
-| monthStyle: rangeFillColor | |
-| cancelButtonStyle: textColor | |
-| confirmButtonStyle: textColor | |
-| confirmButtonStyle: itemFillColor | | 
+| picker | sets the type of picker|
+| inputMode | sets the input mode |
+| startYear | sets the starting year of the calendar|
+| endYear | sets the end year of the calendar|
+| openAtYear | sets the opening year of the calendar|
+| openAtMonth | sets the opening month of the calendar|
+| themeColor | sets the main theme color of the date picker|
+| titleStyle: textLabel | sets the title text|
+| titleStyle: textColor | sets the font color of title text|   
+| selectedDateStyle: textColor | sets the font color of selected date|
+| monthStyle: textColor | sets the font color of dates|
+| monthStyle: todayDateTextColor | sets the font color of today's date|
+| monthStyle: todayDateBorderWidth | sets the border width of today's date|
+| monthStyle: todayDateBorderColor | sets the border  color of today's date |
+| monthStyle: todayDateFillColor | sets the fill color of today's date|
+| monthStyle: itemFillColor | sets the fill color of selected date|
+| monthStyle: rangeFillColor | sets the fill color of selected range|
+| cancelButtonStyle: textColor | sets the font color of cancel button|
+| confirmButtonStyle: textColor | sets the font color of confirm button|
+| confirmButtonStyle: itemFillColor | sets the fill color of confirm button| 
 
 
 ## Directory Structure
