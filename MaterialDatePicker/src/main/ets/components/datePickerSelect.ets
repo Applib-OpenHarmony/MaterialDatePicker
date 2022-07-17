@@ -211,9 +211,9 @@ struct datePickerSelect {
                 this.closeDialog();
               })
               .padding(10)
-          }
-        }.margin({ left:5, right: 5 , bottom:10})
-      }
+          }.margin({right:12})
+        }
+      }.margin({bottom:15})
 
     }
     .clip(true)
