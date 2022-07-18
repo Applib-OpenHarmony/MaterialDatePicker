@@ -10,6 +10,6 @@
   "repository": {},
   "license": "ISC",
   "dependencies": {
-    "@ohos/MaterialDatePicker": "file:../MaterialDatePicker"
+    "@ohos/materialDatePicker": "file:../MaterialDatePicker"
   }
 }
