@@ -1,6 +1,6 @@
 {
   "app": {
-    "bundleName": "com.example.datepickerv2",
+    "bundleName": "com.example.MaterialDatePicker",
     "vendor": "example",
     "versionCode": 1000000,
     "versionName": "1.0.0",
