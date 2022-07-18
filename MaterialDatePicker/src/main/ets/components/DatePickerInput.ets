@@ -15,7 +15,7 @@
  */
 
 import { DatePickerModel } from './DatePickerModel'
-import { pickerType } from './values'
+import { PickerType } from './Values'
 
 @Component
 struct datePickerInput {
@@ -67,7 +67,7 @@ struct datePickerInput {
   build() {
     Column() {
       Flex({ justifyContent: FlexAlign.Start }) {
-        Text((this.parentModel.picker == pickerType.DATE_RANGE_PICKER) ? "INPUT RANGE" : "INPUT DATE")
+        Text((this.parentModel.picker == PickerType.DATE_RANGE_PICKER) ? "INPUT RANGE" : "INPUT DATE")
           .fontColor(Color.White)
           .fontSize(15)
           .fontWeight(550)
@@ -80,7 +80,7 @@ struct datePickerInput {
       .height(60)
 
       Flex({ justifyContent: FlexAlign.SpaceBetween }) {
-        Text((this.parentModel.picker == pickerType.DATE_RANGE_PICKER) ? "Enter Range" : "Enter Date")
+        Text((this.parentModel.picker == PickerType.DATE_RANGE_PICKER) ? "Enter Range" : "Enter Date")
           .fontColor(Color.White)
           .fontSize(30)
           .fontFamily('Times')
@@ -102,7 +102,7 @@ struct datePickerInput {
       .margin({ bottom: 20 })
 
       Row() {
-        if (this.parentModel.picker == pickerType.DATE_PICKER) {
+        if (this.parentModel.picker == PickerType.DATE_PICKER) {
           Column() {
             TextInput({ placeholder: 'dd/mm/yyyy' })
               .type(InputType.Normal)
@@ -209,7 +209,7 @@ struct datePickerInput {
           .fontWeight(550)
           .fontSize(18)
           .onClick((event: ClickEvent) => {
-            if (this.parentModel.picker == pickerType.DATE_PICKER) {
+            if (this.parentModel.picker == PickerType.DATE_PICKER) {
               if (this.isValidDateFormat(this.inputDate)) {
                 this.sendDate(this.inputDate);
                 this.closeDialog();
