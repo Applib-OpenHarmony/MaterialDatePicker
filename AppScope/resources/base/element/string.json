@@ -2,7 +2,7 @@
   "string": [
     {
       "name": "app_name",
-      "value": "DatePickerV2"
+      "value": "MaterialDatePicker"
     }
   ]
 }
