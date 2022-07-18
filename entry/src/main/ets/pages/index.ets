@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { MaterialDatePicker, CalendarType, pickerType } from '@ohos/MaterialDatePicker'
+import { MaterialDatePicker, CalendarType, PickerType } from '@ohos/MaterialDatePicker'
 
 @Entry
 @Component
-struct testScreen {
+struct DemoScreen {
   @State showSelectedDate: string = "Select date";
   @State showSelectedRange: string = "Select range";
   datePicker: CustomDialogController = new CustomDialogController({
@@ -26,7 +26,7 @@ struct testScreen {
       confirm: (value) => this.onAccept(value),
       cancel: this.exitApp,
       options: {
-        picker: pickerType.DATE_PICKER,
+        picker: PickerType.DATE_PICKER,
         inputMode: CalendarType.SELECT_DATE,
         startYear: 2000,
         endYear: 2030,
@@ -66,7 +66,7 @@ struct testScreen {
       confirm: (value) => this.onAcceptRange(value),
       cancel: this.exitApp,
       options: {
-        picker: pickerType.DATE_RANGE_PICKER,
+        picker: PickerType.DATE_RANGE_PICKER,
         inputMode: CalendarType.ENTER_DATE,
         startYear: 2000,
         endYear: 2030,
