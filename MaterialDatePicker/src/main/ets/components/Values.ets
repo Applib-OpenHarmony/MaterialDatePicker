@@ -26,7 +26,7 @@ export enum CalendarType {
   ENTER_DATE
 }
 
-export enum pickerType {
+export enum PickerType {
   DATE_PICKER,
   DATE_RANGE_PICKER
 }
