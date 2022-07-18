@@ -51,24 +51,24 @@ struct MonthCalendar {
           ForEach(this.parentModel.weekdays, (days: string) => {
             GridItem() {
               Column() {
-                Text(days).fontSize(18).fontWeight(FontWeight.Bold).fontColor(Color.Grey);
+                Text(days).fontSize("18fp").fontWeight(FontWeight.Bold).fontColor(Color.Grey);
               }
             }
-            .width(40)
-            .height(40)
+            .width("40vp")
+            .height("40vp")
           })
         }
         .columnsTemplate('1fr 1fr 1fr 1fr 1fr 1fr 1fr')
-        .height(40)
+        .height("40vp")
         .width('100%')
-        .margin({ left: 12, right: 12})
+        .margin({ left: "12vp", right: "12vp"})
 
         Grid() {
           ForEach(new Array(this.model.getStartDayOfMonth(this.currYear, this.currMonth)), (temp: number) => {
             GridItem() {
             }
-            .width(40)
-            .height(40)
+            .width("40vp")
+            .height("40vp")
           })
           ForEach([...Array(this.model.getDaysInMonth(this.currYear, this.currMonth)).keys()], (day: number) => {
             GridItem() {
@@ -79,8 +79,8 @@ struct MonthCalendar {
                 onButtonPress: (selected_date) => this.model.onButtonPress(selected_date)
               })
             }
-            .width(40)
-            .height(40)
+            .width("40vp")
+            .height("40vp")
             .onAreaChange((oldArea, newArea) => {
               if (this.parentModel.cellWidth == 0) {
                 if (typeof newArea.width == 'number')
@@ -92,9 +92,9 @@ struct MonthCalendar {
           })
         }
         .columnsTemplate('1fr 1fr 1fr 1fr 1fr 1fr 1fr')
-        .rowsGap(4)
+        .rowsGap("4vp")
         .width('100%')
-        .margin({ left: 12, right: 12, bottom: 35 })
+        .margin({ left: "12vp", right: "12vp", bottom: "35vp" })
         .onAreaChange((oldArea, newArea) => {
           if (this.parentModel.gridWidth == 0) {
             if (typeof newArea.width == 'number')
