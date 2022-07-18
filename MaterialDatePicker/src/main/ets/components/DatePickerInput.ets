@@ -69,37 +69,37 @@ struct datePickerInput {
       Flex({ justifyContent: FlexAlign.Start }) {
         Text((this.parentModel.picker == PickerType.DATE_RANGE_PICKER) ? "INPUT RANGE" : "INPUT DATE")
           .fontColor(Color.White)
-          .fontSize(15)
-          .fontWeight(550)
+          .fontSize("15fp")
+          .fontWeight("550vp")
           .fontFamily('Times')
-          .margin({ left: 10, top: 10 })
+          .margin({ left: "10vp", top: "10vp" })
 
       }
       .backgroundColor(this.parentModel.themeColor)
       .width('100%')
-      .height(60)
+      .height("60vp")
 
       Flex({ justifyContent: FlexAlign.SpaceBetween }) {
         Text((this.parentModel.picker == PickerType.DATE_RANGE_PICKER) ? "Enter Range" : "Enter Date")
           .fontColor(Color.White)
-          .fontSize(30)
+          .fontSize("30fp")
           .fontFamily('Times')
-          .margin({ left: 10 })
+          .margin({ left: "10vp" })
         Button({ type: ButtonType.Circle }) {
-          Image($r("app.media.calendar")).width(25).height(25)
+          Image($r("app.media.calendar")).width("25vp").height("25vp")
         }
-        .width(30)
-        .height(30)
-        .margin({ right: 40 })
+        .width("30vp")
+        .height("30vp")
+        .margin({ right: "40vp" })
         .backgroundColor(this.parentModel.themeColor)
-        .onClick((event: ClickEvent) => {
+        .onClick(() => {
           this.switchCalendar();
         })
       }
       .backgroundColor(this.parentModel.themeColor)
       .width('100%')
-      .height(50)
-      .margin({ bottom: 20 })
+      .height("50vp")
+      .margin({ bottom: "20vp" })
 
       Row() {
         if (this.parentModel.picker == PickerType.DATE_PICKER) {
@@ -107,45 +107,42 @@ struct datePickerInput {
             TextInput({ placeholder: 'dd/mm/yyyy' })
               .type(InputType.Normal)
               .placeholderColor(Color.Grey)
-              .placeholderFont({ size: 15, weight: FontWeight.Normal, family: "sans-serif", style: FontStyle.Normal })
+              .placeholderFont({ size: "15fp", weight: FontWeight.Normal, family: "sans-serif", style: FontStyle.Normal })
               .enterKeyType(EnterKeyType.Next)
               .caretColor(Color.Blue)
               .width('90%')
-              .height(40)
-              .margin({ bottom: 20 })
-              .fontSize(15)
+              .height("40vp")
+              .margin({ bottom: "20vp" })
+              .fontSize("15fp")
               .fontColor(Color.Black)
               .maxLength(10)
               .onChange((value: string) => {
                 this.inputDate = value;
-              })
-              .onSubmit((enterKey) => {
-
               })
           }
         }
         else {
           Column() {
             Row() {
-              Text("Start date").fontSize(15).fontColor(Color.Black).fontWeight(550)
-            }.width('70%').margin({ bottom: 5 })
+              Text("Start date").fontSize("15fp").fontColor(Color.Black).fontWeight("550vp")
+            }.width('70%').margin({ bottom: "5vp" })
 
             TextInput({ placeholder: 'dd/mm/yyyy' })
               .type(InputType.Normal)
               .placeholderColor(Color.Grey)
-              .placeholderFont({ size: 15, weight: FontWeight.Normal, family: "sans-serif", style: FontStyle.Normal })
+              .placeholderFont({ size: "15fp", weight: FontWeight.Normal, family: "sans-serif", style: FontStyle.Normal })
               .enterKeyType(EnterKeyType.Next)
               .caretColor(Color.Blue)
               .width('90%')
-              .height(40)
-              .margin({ bottom: 20 })
-              .fontSize(15)
+              .height("40vp")
+              .margin({ bottom: "20vp" })
+              .fontSize("15fp")
               .fontColor(Color.Black)
               .maxLength(10)
               .onChange((value: string) => {
                 this.startDate = value;
               })
-              .onSubmit((enterKey) => {
+              .onSubmit(() => {
                 if (!this.isValidDateFormat(this.startDate)) {
                   AlertDialog.show(
                     {
@@ -166,26 +163,23 @@ struct datePickerInput {
 
           Column() {
             Row() {
-              Text("End date").fontSize(15).fontColor(Color.Black).fontWeight(550)
-            }.width('70%').margin({ bottom: 5 })
+              Text("End date").fontSize("15fp").fontColor(Color.Black).fontWeight("550vp")
+            }.width('70%').margin({ bottom: "5vp" })
 
             TextInput({ placeholder: 'dd/mm/yyyy' })
               .type(InputType.Normal)
               .placeholderColor(Color.Grey)
-              .placeholderFont({ size: 15, weight: FontWeight.Normal, family: "sans-serif", style: FontStyle.Normal })
+              .placeholderFont({ size: "15fp", weight: FontWeight.Normal, family: "sans-serif", style: FontStyle.Normal })
               .enterKeyType(EnterKeyType.Next)
               .caretColor(Color.Blue)
               .width('90%')
-              .height(40)
-              .margin({ bottom: 20 })
-              .fontSize(15)
+              .height("40vp")
+              .margin({ bottom: "20vp" })
+              .fontSize("15fp")
               .fontColor(Color.Black)
               .maxLength(10)
               .onChange((value: string) => {
                 this.endDate = value;
-              })
-              .onSubmit((enterKey) => {
-
               })
           }.width('50%')
         }
@@ -194,21 +188,21 @@ struct datePickerInput {
 
       Flex({ justifyContent: FlexAlign.End }) {
         Button("Cancel", { type: ButtonType.Normal })
-          .width(100)
+          .width("100vp")
           .backgroundColor(Color.White)
           .fontColor(Color.Grey)
-          .fontWeight(550)
-          .onClick((event: ClickEvent) => {
+          .fontWeight("550vp")
+          .onClick(() => {
             this.closeDialog();
           })
           .padding(10)
         Button("Ok", { type: ButtonType.Normal })
-          .width(100)
+          .width("100vp")
           .backgroundColor(this.parentModel.themeColor)
-          .borderRadius(2)
-          .fontWeight(550)
-          .fontSize(18)
-          .onClick((event: ClickEvent) => {
+          .borderRadius("2vp")
+          .fontWeight("550vp")
+          .fontSize("18fp")
+          .onClick(() => {
             if (this.parentModel.picker == PickerType.DATE_PICKER) {
               if (this.isValidDateFormat(this.inputDate)) {
                 this.sendDate(this.inputDate);
@@ -223,8 +217,6 @@ struct datePickerInput {
                       value: 'OK',
                       action: () => {
                       }
-                    },
-                    cancel: () => {
                     }
                   }
                 )
@@ -244,8 +236,6 @@ struct datePickerInput {
                       value: 'OK',
                       action: () => {
                       }
-                    },
-                    cancel: () => {
                     }
                   }
                 )
@@ -254,10 +244,10 @@ struct datePickerInput {
 
           })
           .padding(10)
-      }.width('100%').height(40).margin({ right: 20, bottom: 10 })
+      }.width('100%').height("40vp").margin({ right: "20vp", bottom: "10vp" })
     }
     .clip(true)
-    .borderRadius('22vp')
+    .borderRadius("22vp")
   }
 }
 
