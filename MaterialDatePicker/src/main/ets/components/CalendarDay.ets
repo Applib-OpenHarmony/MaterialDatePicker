@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { DayState } from './values'
+import { DayState } from './Values'
 import { DatePickerModel } from './DatePickerModel'
 
 @Component
