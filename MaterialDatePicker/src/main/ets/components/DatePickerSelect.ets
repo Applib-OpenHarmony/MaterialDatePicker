@@ -15,8 +15,8 @@
  */
 
 import MonthCalendar from './MonthCalendar'
-import yearSelectGrid from './yearSelectGrid'
-import { pickerType } from './values'
+import yearSelectGrid from './YearSelectGrid'
+import { PickerType } from './Values'
 import { DatePickerModel } from './DatePickerModel'
 
 @Component
@@ -198,7 +198,7 @@ struct datePickerSelect {
               .fontWeight(20)
               .fontSize(18)
               .onClick((event: ClickEvent) => {
-                if (this.parentModel.picker == pickerType.DATE_PICKER) {
+                if (this.parentModel.picker == PickerType.DATE_PICKER) {
                   if (this.parentModel.isSelected) {
                     this.sendDate(this.parentModel.selectedDate);
                   }
