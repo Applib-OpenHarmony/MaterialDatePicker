@@ -109,82 +109,82 @@ struct DemoScreen {
     Column() {
       Flex({ justifyContent: FlexAlign.Start }) {
         Button({ type: ButtonType.Circle }) {
-          Image($r("app.media.menu")).width(30).height(30)
-        }.width(30).height(30).margin({ left: 10 }).backgroundColor(Color.White)
+          Image($r("app.media.menu")).width("30vp").height("30vp")
+        }.width("30vp").height("30vp").margin({ left: "10vp" }).backgroundColor(Color.White)
 
         Text('Date Picker')
           .fontFamily("San Francisco")
-          .fontSize(25)
+          .fontSize("25fp")
           .fontWeight(FontWeight.Bold)
-          .margin({ left: 20, bottom: 20 })
+          .margin({ left: "20vp", bottom: "20vp" })
       }
 
-      Divider().width('100%').strokeWidth(4).color(0xEAEAEA)
+      Divider().width('100%').strokeWidth("4vp").color(0xEAEAEA)
       Flex({ justifyContent: FlexAlign.Start }) {
-        Text("Select Date").fontFamily("Times New Roman").fontSize(20).margin({ left: 15, top: 20, bottom: 20 })
+        Text("Select Date").fontFamily("Times New Roman").fontSize("20fp").margin({ left: "15vp", top: "20vp", bottom: "20vp" })
       }
 
       Flex({ justifyContent: FlexAlign.Start }) {
-        Text("Start").fontFamily("Times New Roman").fontSize(15).margin({ left: 15, bottom: 15 })
+        Text("Start").fontFamily("Times New Roman").fontSize("15fp").margin({ left: "15vp", bottom: "15vp" })
       }
 
       Flex({ justifyContent: FlexAlign.Start }) {
         Column() {
           Row() {
-            Text(this.showSelectedDate).fontSize(15)
-          }.width('100%').padding(5)
+            Text(this.showSelectedDate).fontSize("15fp")
+          }.width('100%').padding("5vp")
         }
         .alignSelf(ItemAlign.Center)
-        .borderWidth(1)
+        .borderWidth("1vp")
         .borderColor(Color.Grey)
         .width('75%')
-        .height(30)
-        .margin({ left: 15 })
+        .height("30vp")
+        .margin({ left: "15vp" })
 
         Column() {
           Row() {
             Button({ type: ButtonType.Circle }) {
-              Image($r("app.media.range_calendar")).width(20).height(20)
-            }.width(20).height(20).backgroundColor(Color.White)
+              Image($r("app.media.range_calendar")).width("20vp").height("20vp")
+            }.width("20vp").height("20vp").backgroundColor(Color.White)
             .onClick(() => {
               this.datePicker.open()
             })
-          }.padding(5)
-        }.borderWidth(1).borderColor(Color.Grey).width('10%').height(30)
-      }.margin({ bottom: 15 })
+          }.padding("5vp")
+        }.borderWidth("1vp").borderColor(Color.Grey).width('10%').height("30vp")
+      }.margin({ bottom: "15vp" })
 
       Flex({ justifyContent: FlexAlign.Start }) {
-        Text("Select Range").fontFamily("Times New Roman").fontSize(20).margin({ left: 15, top: 20, bottom: 20 })
+        Text("Select Range").fontFamily("Times New Roman").fontSize("20fp").margin({ left: "15vp", top: "20vp", bottom: "20vp" })
       }
 
       Flex({ justifyContent: FlexAlign.Start }) {
-        Text("Start - End").fontFamily("Times New Roman").fontSize(15).margin({ left: 15, bottom: 15 })
+        Text("Start - End").fontFamily("Times New Roman").fontSize("15fp").margin({ left: "15vp", bottom: "15vp" })
       }
 
       Flex({ justifyContent: FlexAlign.Start }) {
         Column() {
           Row() {
-            Text(this.showSelectedRange).fontSize(15)
-          }.width('100%').padding(5)
+            Text(this.showSelectedRange).fontSize("15fp")
+          }.width('100%').padding("5vp")
         }
         .alignSelf(ItemAlign.Center)
-        .borderWidth(1)
+        .borderWidth("1vp")
         .borderColor(Color.Grey)
         .width('75%')
-        .height(30)
-        .margin({ left: 15 })
+        .height("30vp")
+        .margin({ left: "15vp" })
 
         Column() {
           Row() {
             Button({ type: ButtonType.Circle }) {
-              Image($r("app.media.range_calendar")).width(20).height(20)
-            }.width(20).height(20).backgroundColor(Color.White)
+              Image($r("app.media.range_calendar")).width("20vp").height("20vp")
+            }.width("20vp").height("20vp").backgroundColor(Color.White)
             .onClick(() => {
               this.rangePicker.open()
             })
-          }.padding(5)
-        }.borderWidth(1).borderColor(Color.Grey).width('10%').height(30)
-      }.margin({ bottom: 15 })
+          }.padding("5vp")
+        }.borderWidth("1vp").borderColor(Color.Grey).width('10%').height("30vp")
+      }.margin({ bottom: "15vp" })
     }
 
   }
