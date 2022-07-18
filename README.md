@@ -83,9 +83,10 @@ The following image shows a date picker and a range date picker in different mod
 
 ### Date picker
 Calendar date pickers can be used to select dates in the near future or past, when it’s useful to see them in a calendar month format. They are displayed in a dialog.
+
 Common use cases include:
-Making a restaurant reservation
-Scheduling a meeting
+- Making a restaurant reservation
+- Scheduling a meeting
 
 #### Date picker example
 
@@ -121,9 +122,11 @@ MaterialDatePicker({
 
 ### Date range pickers
 Mobile date range pickers allow selection of a range of dates.
+
 Common use cases include:
-Booking a flight
-Reserving a hotel
+
+- Booking a flight
+- Reserving a hotel
 
 #### Date range picker example
 
