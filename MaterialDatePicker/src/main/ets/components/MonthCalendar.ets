@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import calendarDay from './calendarDay'
-import { DayState } from './values'
+import calendarDay from './CalendarDay'
+import { DayState } from './Values'
 import { DatePickerModel } from './DatePickerModel'
 
 @Component
