@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { MaterialDatePicker, CalendarType, PickerType } from '@ohos/MaterialDatePicker'
+import { MaterialDatePicker, CalendarType, PickerType } from '@ohos/materialDatePicker'
 
 @Entry
 @Component
