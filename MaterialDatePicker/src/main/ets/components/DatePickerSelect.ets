@@ -32,61 +32,61 @@ struct datePickerSelect {
       Flex({ justifyContent: FlexAlign.SpaceBetween }) {
         Text(this.parentModel.titleText)
           .fontColor(this.parentModel.titleTextColor)
-          .fontSize(15)
-          .fontWeight(550)
+          .fontSize("15fp")
+          .fontWeight("550vp")
           .fontFamily('Times')
-          .margin({ left: 10, top: 10 })
+          .margin({ left: "10vp", top: "10vp" })
         Button({ type: ButtonType.Circle }) {
-          Image($r("app.media.close")).width(30).height(30)
+          Image($r("app.media.close")).width("30vp").height("30vp")
         }
-        .width(30)
-        .height(30)
-        .margin({ right: 40, top: 10 })
+        .width("30vp")
+        .height("30vp")
+        .margin({ right: "40vp", top: "10vp" })
         .backgroundColor(this.parentModel.themeColor)
-        .onClick((event: ClickEvent) => {
+        .onClick(() => {
           this.closeDialog();
         })
       }
       .backgroundColor(this.parentModel.themeColor)
       .width('100%')
-      .height(60)
+      .height("60vp")
 
       Flex({ justifyContent: FlexAlign.SpaceBetween }) {
         Text(this.parentModel.getSelectedDateText())
           .fontColor(this.parentModel.selectedDateColor)
-          .fontSize(26)
+          .fontSize("26fp")
           .fontFamily('Times')
           .fontWeight(FontWeight.Bold)
-          .margin({ left: 10, top: 10 })
+          .margin({ left: "10vp", top: "10vp" })
         Button({ type: ButtonType.Circle }) {
-          Image($r("app.media.edit")).width(25).height(25)
+          Image($r("app.media.edit")).width("25vp").height("25vp")
         }
-        .width(30)
-        .height(30)
-        .margin({ right: 40, top: 10 })
+        .width("30vp")
+        .height("30vp")
+        .margin({ right: "40vp", top: "10vp" })
         .backgroundColor(this.parentModel.themeColor)
-        .onClick((event: ClickEvent) => {
+        .onClick(() => {
           this.switchCalendar();
         })
       }
       .backgroundColor(this.parentModel.themeColor)
       .width('100%')
-      .height(60)
+      .height("60vp")
 
       Flex({ justifyContent: FlexAlign.SpaceBetween }) {
         Column() {
           Row() {
             Text(this.parentModel.month[this.parentModel.currMonth] + " " + this.parentModel.currYear)
-              .fontSize(16)
-              .fontWeight(550)
+              .fontSize("16fp")
+              .fontWeight("550vp")
             Button({ type: ButtonType.Circle }) {
-              Image($r("app.media.arrow_drop_down")).width(20).height(20)
+              Image($r("app.media.arrow_drop_down")).width("20vp").height("20vp")
             }
-            .width(20)
-            .height(20)
-            .margin({ left: 10, right: 15 })
+            .width("20vp")
+            .height("20vp")
+            .margin({ left: "10vp", right: "15vp" })
             .backgroundColor(Color.White)
-            .onClick((event: ClickEvent) => {
+            .onClick(() => {
               this.parentModel.showYearList = !this.parentModel.showYearList;
             })
           }
@@ -95,27 +95,27 @@ struct datePickerSelect {
         Column() {
           Row() {
             Button({ type: ButtonType.Circle }) {
-              Image($r("app.media.arrow_back")).width(20).height(20)
+              Image($r("app.media.arrow_back")).width("20vp").height("20vp")
             }
-            .width(20)
-            .height(20)
-            .margin({ right: 15 })
+            .width("20vp")
+            .height("20vp")
+            .margin({ right: "15vp" })
             .backgroundColor(Color.White)
-            .onClick((event: ClickEvent) => {
+            .onClick(() => {
               this.swiperController.showPrevious()
             })
 
             Button({ type: ButtonType.Circle }) {
-              Image($r("app.media.arrow_forward")).width(20).height(20)
-            }.width(20).height(20).backgroundColor(Color.White)
-            .onClick((event: ClickEvent) => {
+              Image($r("app.media.arrow_forward")).width("20vp").height("20vp")
+            }.width("20vp").height("20vp").backgroundColor(Color.White)
+            .onClick(() => {
               this.swiperController.showNext()
             })
           }
         }
       }
-      .height(30)
-      .margin({ left: 24, right: 24, top: 18, bottom: 10 })
+      .height("30vp")
+      .margin({ left: "24vp", right: "24vp", top: "18vp", bottom: "10vp" })
 
       Row() {
         if (this.parentModel.showYearList) {
@@ -160,17 +160,17 @@ struct datePickerSelect {
             this.parentModel.prevIdx = index;
           })
         }
-      }.width('100%').height(350).alignItems(VerticalAlign.Top)
+      }.width('100%').height("350vp").alignItems(VerticalAlign.Top)
 
       Flex({ justifyContent: FlexAlign.SpaceBetween }) {
         Column() {
           Row() {
             Button("Today", { type: ButtonType.Normal })
-              .width(100)
+              .width("100vp")
               .backgroundColor(Color.White)
-              .fontWeight(550)
+              .fontWeight("550vp")
               .fontColor(Color.Grey)
-              .onClick((event: ClickEvent) => {
+              .onClick(() => {
                 this.parentModel.currMonth = this.parentModel.todayMonth;
                 this.parentModel.currYear = this.parentModel.todayYear;
               })
@@ -181,23 +181,23 @@ struct datePickerSelect {
         Column() {
           Row() {
             Button("Cancel", { type: ButtonType.Normal })
-              .width(100)
+              .width("100vp")
               .backgroundColor(Color.White)
-              .fontWeight(550)
+              .fontWeight("550vp")
               .fontColor(this.parentModel.cancelButtonTextColor)
-              .onClick((event: ClickEvent) => {
+              .onClick(() => {
                 this.closeDialog();
               })
               .padding(10)
             Button("Select", { type: ButtonType.Normal })
-              .width(100)
+              .width("100vp")
               .backgroundColor(this.parentModel.confirmButtonFillColor)
-              .fontWeight(550)
+              .fontWeight("550vp")
               .fontColor(this.parentModel.confirmButtonTextColor)
-              .borderRadius(2)
-              .fontWeight(20)
-              .fontSize(18)
-              .onClick((event: ClickEvent) => {
+              .borderRadius("2vp")
+              .fontWeight("20vp")
+              .fontSize("18fp")
+              .onClick(() => {
                 if (this.parentModel.picker == PickerType.DATE_PICKER) {
                   if (this.parentModel.isSelected) {
                     this.sendDate(this.parentModel.selectedDate);
@@ -211,14 +211,14 @@ struct datePickerSelect {
                 this.closeDialog();
               })
               .padding(10)
-          }.margin({right:12})
+          }.margin({right:"12vp"})
         }
-      }.margin({bottom:15})
+      }.margin({bottom:"15vp"})
 
     }
     .clip(true)
-    .borderRadius('22vp')
-//    .height('88%')
+    .borderRadius("22vp")
+
   }
 }
 
