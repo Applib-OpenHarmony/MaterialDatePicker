@@ -11,6 +11,7 @@ Install using npm
 Details about OpenHarmony NPM environment configuration, see at [here](https://gitee.com/openharmony-tpc/docs/blob/master/OpenHarmony_npm_usage.md)
 
 
+
 ## Usage instructions
 1. Add dependencies
 
@@ -67,14 +68,16 @@ MaterialDatePicker({
 ```
 
 
+
 ## Usage
-The following image shows a date picker and a range date picker.
-1. SELECT_MODE
+The following image shows a date picker and a range date picker in different modes:
+
+1. _SELECT_MODE_
 
 ![Select mode of Date and Range Pickers](./Images/DatePicker_SelectMode.png)
 
 
-2. INPUT_MODE
+2. _INPUT_MODE_
 
 ![Input mode of Date and Range Pickers](./Images/DatePicker_InputMode.png)
 
@@ -85,8 +88,10 @@ Making a restaurant reservation
 Scheduling a meeting
 
 #### Date picker example
+
 The following example shows a date picker with a date selected.
-![]()
+
+![Date Picker](./Images/Date_Picker.png)
 
 In code:
 
@@ -121,8 +126,10 @@ Booking a flight
 Reserving a hotel
 
 #### Date range picker example
+
 The following example shows a date range picker with a date range selected.
-![]()
+
+![Date Range Picker](./Images/Date_Range_Picker.png)
 
 In code:
 1. SELECT_MODE
