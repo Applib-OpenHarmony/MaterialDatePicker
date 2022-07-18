@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import datePickerSelect from './datePickerSelect'
-import datePickerInput from './datePickerInput'
+import datePickerSelect from './DatePickerSelect'
+import datePickerInput from './DatePickerInput'
 import { DatePickerModel } from './DatePickerModel'
-import { CalendarType } from './values'
+import { CalendarType } from './Values'
 import { DatePickerOptions } from './Types'
 
 @CustomDialog
