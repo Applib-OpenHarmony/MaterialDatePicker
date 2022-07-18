@@ -28,17 +28,17 @@ struct calendarDay {
     Column() {
       Button({ type: ButtonType.Circle }) {
         Text(this.date + 1 + '')
-          .fontSize(17)
+          .fontSize("17fp")
           .fontFamily('Times')
-          .fontWeight(550)
+          .fontWeight("550vp")
           .fontColor(this.parentModel.getFontColor(this.typeOfDay))
       }
       .backgroundColor(this.parentModel.getBackgroundColor(this.typeOfDay))
       .borderWidth(this.parentModel.getBorderWidth(this.typeOfDay))
       .borderColor(this.parentModel.todayDateBorderColor)
-      .borderRadius(100)
-      .width(40)
-      .height(40)
+      .borderRadius("100vp")
+      .width("40vp")
+      .height("40vp")
       .onClick((event: ClickEvent) => {
         this.onButtonPress(this.date);
       })
