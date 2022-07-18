@@ -70,10 +70,13 @@ MaterialDatePicker({
 ## Usage
 The following image shows a date picker and a range date picker.
 1. SELECT_MODE
-![]()
+
+![Select mode of Date and Range Pickers](./Images/DatePicker_SelectMode.png)
+
 
 2. INPUT_MODE
-![]()
+
+![Input mode of Date and Range Pickers](./Images/DatePicker_InputMode.png)
 
 ### Date picker
 Calendar date pickers can be used to select dates in the near future or past, when it’s useful to see them in a calendar month format. They are displayed in a dialog.
@@ -150,7 +153,7 @@ MaterialDatePicker({
 
 The following diagram shows the elements of a date picker:
 
-![]()
+![Elements of date picker](./Images/Labelled.png)
 
 1. Title
 2. Selected date
@@ -159,6 +162,7 @@ The following diagram shows the elements of a date picker:
 5. Month pagination
 6. Current date
 7. Selected date
+8. Go to today-date button
 
 
 ## Attributes
