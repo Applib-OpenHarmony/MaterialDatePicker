@@ -6,7 +6,7 @@ Date pickers let users select a date or range of dates.
 ## Download & Install
 Install using npm
 
-```npm i @ohos/MaterialDatePicker```
+```npm i @ohos/materialDatePicker```
 
 Details about OpenHarmony NPM environment configuration, see at [here](https://gitee.com/openharmony-tpc/docs/blob/master/OpenHarmony_npm_usage.md)
 
@@ -17,7 +17,7 @@ Details about OpenHarmony NPM environment configuration, see at [here](https://g
 For using MaterialDatePicker in your app, add the below dependency in the entry/package.json  
 ```
 "dependencies": {
-    "@ohos/MaterialDatePicker": "file:../MaterialDatePicker"
+    "@ohos/materialDatePicker": "file:../MaterialDatePicker"
   }
 ```
 
@@ -25,7 +25,7 @@ For using MaterialDatePicker in your app, add the below dependency in the entry/
 
 Import these components and data types
 ```
-import { MaterialDatePicker, CalendarType, pickerType } from '@ohos/MaterialDatePicker'
+import { MaterialDatePicker, CalendarType, PickerType } from '@ohos/materialDatePicker'
 ```
 
 3. Code for creating DatePickerDialog
@@ -34,7 +34,7 @@ MaterialDatePicker({
       confirm: (value) => this.onAccept(value),
       cancel: this.exitApp,
       options: {
-        picker: pickerType.DATE_PICKER,
+        picker: PickerType.DATE_PICKER,
         inputMode: CalendarType.SELECT_DATE,
         startYear: 2000,
         endYear: 2030,
@@ -92,7 +92,7 @@ In code:
 MaterialDatePicker({
       ...
       options: {
-        picker: pickerType.DATE_PICKER,
+        picker: PickerType.DATE_PICKER,
         inputMode: CalendarType.SELECT_DATE,
       ...
       }
@@ -104,7 +104,7 @@ MaterialDatePicker({
 MaterialDatePicker({
       ...
       options: {
-        picker: pickerType.DATE_PICKER,
+        picker: PickerType.DATE_PICKER,
         inputMode: CalendarType.ENTER_DATE,
       ...
       }
@@ -127,7 +127,7 @@ In code:
 MaterialDatePicker({
       ...
       options: {
-        picker: pickerType.DATE_RANGE_PICKER,
+        picker: PickerType.DATE_RANGE_PICKER,
         inputMode: CalendarType.SELECT_DATE,
       ...
       }
@@ -139,7 +139,7 @@ MaterialDatePicker({
 MaterialDatePicker({
       ...
       options: {
-        picker: pickerType.DATE_RANGE_PICKER,
+        picker: PickerType.DATE_RANGE_PICKER,
         inputMode: CalendarType.ENTER_DATE,
       ...
       }
@@ -196,15 +196,15 @@ You can customize the date picker using these attributes:
 |                 |---- main
 |                       |---- ets
 |                             |---- components
-|                                   |---- calendarDay.ets
-|                                   |---- datePickerInput.ets
-|                                   |---- datePickerSelect.ets
+|                                   |---- CalendarDay.ets
+|                                   |---- DatePickerInput.ets
+|                                   |---- DatePickerSelect.ets
 |                                   |---- DatePickerModel.ets
 |                                   |---- MaterialDatePicker.ets
 |                                   |---- MonthCalendar.ets
 |                                   |---- Types.ets
-|                                   |---- values.ets
-|                                   |---- yearSelectGrid.ets
+|                                   |---- Values.ets
+|                                   |---- YearSelectGrid.ets
 |                                  
 |           |---- index.ets
 |
