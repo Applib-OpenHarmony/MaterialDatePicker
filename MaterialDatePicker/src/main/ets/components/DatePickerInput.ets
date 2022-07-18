@@ -34,11 +34,11 @@ struct datePickerInput {
     var year = parseInt(temp[2])
     var startDate: Date = new Date(year, month, date)
 
-    var temp2 = value.split("/")
-    var date2 = parseInt(temp2[0])
-    var month2 = parseInt(temp2[1])
-    var year2 = parseInt(temp2[2])
-    var endDate: Date = new Date(year2, month2, date2)
+    temp = value.split("/")
+    date = parseInt(temp[0])
+    month = parseInt(temp[1])
+    year = parseInt(temp[2])
+    var endDate: Date = new Date(year, month, date)
     if (endDate >= startDate) return true;
     else return false;
   }
