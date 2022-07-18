@@ -1,7 +1,7 @@
 # Date Picker
 Date pickers let users select a date or range of dates.
 
-![]()
+![Date_Picker_GIF](./Images/Date_Picker_gif.gif)
 
 ## Download & Install
 Install using npm
