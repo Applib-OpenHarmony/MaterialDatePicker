@@ -27,37 +27,37 @@ struct yearSelectGrid {
         GridItem() {
           Button({ type: ButtonType.Normal }) {
             if (year == this.parentModel.selectedYear || year == this.parentModel.rangeStartYear || year == this.parentModel.rangeEndYear) {
-              Text(year + '').fontSize(18).fontWeight(550).fontColor(Color.White).fontWeight(FontWeight.Regular);
+              Text(year + '').fontSize("18fp").fontWeight("550vp").fontColor(Color.White).fontWeight(FontWeight.Regular);
             }
             else if (year == this.parentModel.todayYear) {
               Text(year + '')
-                .fontSize(18)
-                .fontWeight(550)
+                .fontSize("18fp")
+                .fontWeight("550vp")
                 .fontColor(this.parentModel.themeColor)
                 .fontWeight(FontWeight.Regular);
             }
             else {
-              Text(year + '').fontSize(18).fontWeight(550).fontColor(Color.Black).fontWeight(FontWeight.Regular);
+              Text(year + '').fontSize("18fp").fontWeight("550vp").fontColor(Color.Black).fontWeight(FontWeight.Regular);
             }
           }
-          .width(72)
-          .height(36)
+          .width("72vp")
+          .height("36vp")
           .backgroundColor((year == this.parentModel.selectedYear || year == this.parentModel.rangeStartYear || year == this.parentModel.rangeEndYear) ? this.parentModel.themeColor : Color.White)
           .borderColor((year == this.parentModel.todayYear) ? this.parentModel.themeColor : undefined)
-          .borderRadius(36)
-          .borderWidth((year == this.parentModel.todayYear) ? 1 : 0)
+          .borderRadius("36vp")
+          .borderWidth((year == this.parentModel.todayYear) ? "1vp" : "0vp")
           .onClick((event: ClickEvent) => {
             this.parentModel.currYear = year;
             this.parentModel.showYearList = false;
           })
         }
-        .width(88)
-        .height(52)
+        .width("88vp")
+        .height("52vp")
       })
     }.columnsTemplate('1fr 1fr 1fr')
-    .columnsGap(8)
-    .height(300)
-    .margin({ left: 24, right: 24 })
+    .columnsGap("8vp")
+    .height("300vp")
+    .margin({ left: "24vp", right: "24vp" })
   }
 }
 
