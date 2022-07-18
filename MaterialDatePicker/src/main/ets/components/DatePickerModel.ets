@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { CalendarType, DayState, pickerType } from './values'
+import { CalendarType, DayState, PickerType } from './Values'
 import { DatePickerOptions } from './Types'
 
 export class DatePickerModel implements DatePickerOptions {
@@ -47,11 +47,11 @@ export class DatePickerModel implements DatePickerOptions {
   gridStartY: number = 0
 
   inputMode: CalendarType = CalendarType.ENTER_DATE
-  picker: pickerType = pickerType.DATE_PICKER
+  picker: PickerType = PickerType.DATE_PICKER
   startYear: number = 1900
   endYear: number = 2100
   themeColor: Color = 0x5e00ff
-  titleText: string = (this.picker == pickerType.DATE_PICKER) ? "Select date" : "Select range"
+  titleText: string = (this.picker == PickerType.DATE_PICKER) ? "Select date" : "Select range"
   titleTextColor: Color = Color.White
   selectedDateColor: Color = Color.White
   textColor: Color = Color.Black
@@ -134,7 +134,7 @@ export class DatePickerModel implements DatePickerOptions {
   }
 
   getSelectedDateText(): string{
-    if (this.picker == pickerType.DATE_PICKER) {
+    if (this.picker == PickerType.DATE_PICKER) {
       if (this.isSelected) {
         let temp: string = this.month[this.selectedMonth] + " " + String(this.selectedDay)
           .padStart(2, '0') + ", " + this.selectedYear;
