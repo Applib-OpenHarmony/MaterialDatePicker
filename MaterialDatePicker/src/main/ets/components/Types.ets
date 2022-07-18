@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { CalendarType, pickerType } from './values'
+import { CalendarType, PickerType } from './Values'
 
 export interface DatePickerOptions {
-  picker?: pickerType
+  picker?: PickerType
   inputMode?: CalendarType
   startYear?: number
   endYear?: number
