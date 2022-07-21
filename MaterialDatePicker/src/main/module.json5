@@ -1,0 +1,11 @@
+{
+  "module": {
+    "name": "MaterialDatePicker",
+    "type": "har",
+    "deviceTypes": [
+      "phone",
+      "tablet"
+    ],
+    "uiSyntax": "ets"
+  }
+}
